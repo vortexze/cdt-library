@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAM ZEGG — Car Dealership Tycoon</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#03050f; --bg1:#060a18; --panel:rgba(8,14,32,0.9);
+  --border:rgba(0,229,201,0.12); --border2:rgba(0,229,201,0.28);
+  --accent:#00e5c9; --accent-glow:rgba(0,229,201,0.35);
+  --gold:#ffb700; --gold-glow:rgba(255,183,0,0.3);
+  --red:#ff2d55; --red-glow:rgba(255,45,85,0.3);
+  --text:#e8eaf6; --muted:#4a5680; --muted2:#7b8ab8;
+  --silver:#c0c0c0; --bronze:#cd7f32; --r:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;cursor:none;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4;}
+
+/* CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:screen;}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(0,229,201,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .25s,height .25s;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .7s,visibility .7s;}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-logo{font-family:'Orbitron',sans-serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;letter-spacing:12px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:fup .8s .2s forwards;}
+.ld-sub{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:8px;color:var(--muted2);margin-top:12px;opacity:0;animation:fup .6s .6s forwards;}
+.ld-bar{width:200px;height:2px;background:rgba(255,255,255,.06);margin-top:40px;overflow:hidden;opacity:0;animation:fup .4s .8s forwards;}
+.ld-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0;animation:fillbar 1.4s 1s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes fup{to{opacity:1;}}
+@keyframes fillbar{to{width:100%;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shimmer{0%{background-position:0% center;}100%{background-position:200% center;}}
+@keyframes scrollPulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,229,201,.3);}50%{box-shadow:0 0 0 8px rgba(0,229,201,0);}}
+
+/* CANVAS */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:50;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(3,5,15,.75);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:background .3s,box-shadow .3s;}
+header.sc{background:rgba(3,5,15,.95);box-shadow:0 4px 40px rgba(0,229,201,.05);}
+.logo{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;letter-spacing:4px;text-decoration:none;display:flex;align-items:center;gap:10px;cursor:none;}
+.logo-t{background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px var(--accent-glow));}
+.logo-b{font-size:.48rem;letter-spacing:3px;color:var(--muted2);background:rgba(0,229,201,.08);border:1px solid var(--border2);padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;}
+nav{display:flex;gap:2px;}
+.nb{background:none;border:none;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;padding:8px 16px;cursor:none;position:relative;transition:color .2s;overflow:hidden;}
+.nb::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:1px;background:var(--accent);box-shadow:0 0 8px var(--accent);transition:left .25s,right .25s;}
+.nb:hover,.nb.active{color:var(--accent);}
+.nb.active::after{left:16px;right:16px;}
+.nb::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(0,229,201,.08) 50%,transparent 60%);transform:translateX(-100%);transition:transform .4s;}
+.nb:hover::before{transform:translateX(100%);}
+.hdisc{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#5865F2,#4752c4);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.78rem;letter-spacing:1.5px;padding:10px 20px;cursor:none;border-radius:4px;text-decoration:none;transition:box-shadow .2s,transform .2s;overflow:hidden;position:relative;}
+.hdisc::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);transform:translateX(-100%);transition:transform .5s;}
+.hdisc:hover{box-shadow:0 0 24px rgba(88,101,242,.5);transform:translateY(-1px);}
+.hdisc:hover::before{transform:translateX(100%);}
+
+/* BURGER */
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer !important;padding:8px;}
+.burger span{display:block;width:24px;height:2px;background:var(--accent);border-radius:2px;transition:transform .3s,opacity .3s;}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* MOBILE DRAWER */
+#drawer{display:none;position:fixed;inset:0;z-index:150;pointer-events:none;}
+#drawer.open{pointer-events:all;}
+.dr-bg{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s;}
+#drawer.open .dr-bg{opacity:1;}
+.dr-panel{position:absolute;top:0;right:0;width:min(300px,85vw);height:100%;background:rgba(4,7,20,.97);border-left:1px solid var(--border);display:flex;flex-direction:column;padding:80px 0 40px;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
+#drawer.open .dr-panel{transform:translateX(0);}
+.dr-item{padding:18px 32px;font-size:1.05rem;font-weight:600;letter-spacing:2px;color:var(--muted2);border-left:3px solid transparent;transition:all .2s;cursor:pointer !important;}
+.dr-item:hover,.dr-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,229,201,.04);}
+.dr-disc{margin:24px 24px 0;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#5865F2,#4752c4);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;padding:14px;border-radius:6px;text-decoration:none;justify-content:center;cursor:pointer !important;}
+
+/* BOTTOM NAV */
+#bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(4,7,20,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);}
+.bnav-wrap{display:flex;}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 14px;gap:4px;background:none;border:none;cursor:pointer !important;color:var(--muted);transition:color .2s;position:relative;min-height:62px;}
+.bni::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--accent);transform:scaleX(0);transition:transform .25s;border-radius:0 0 2px 2px;}
+.bni.active{color:var(--accent);}
+.bni.active::before{transform:scaleX(1);}
+.bni-icon{font-size:1.3rem;line-height:1;}
+.bni-label{font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;font-family:'DM Mono',monospace;}
+
+/* SECTIONS */
+.section{display:none;position:relative;z-index:2;animation:fadeUp .45s cubic-bezier(.4,0,.2,1);}
+.section.active{display:block;}
+.container{max-width:1160px;margin:0 auto;padding:80px 48px;}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:.1s;} .reveal-d2{transition-delay:.2s;} .reveal-d3{transition-delay:.3s;}
+
+/* HERO */
+.hero{min-height:calc(100vh - 70px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 48px;position:relative;overflow:hidden;}
+.hero-tag{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:6px;color:var(--accent);text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:14px;opacity:0;animation:fadeUp .6s .4s forwards;}
+.hero-tag::before,.hero-tag::after{content:'';flex:1;max-width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--accent));}
+.hero-tag::after{background:linear-gradient(270deg,transparent,var(--accent));}
+.hero-h1{font-family:'Orbitron',sans-serif;font-size:clamp(4.5rem,13vw,11rem);font-weight:900;line-height:.88;letter-spacing:-2px;margin-bottom:24px;opacity:0;animation:fadeUp .7s .6s forwards;}
+.line1{display:block;background:linear-gradient(135deg,#fff 20%,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.line2{display:block;background:linear-gradient(135deg,var(--accent) 0%,var(--gold) 60%,var(--accent) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fadeUp .7s .6s forwards,shimmer 4s 1.5s linear infinite;}
+.hero-sub{font-size:1rem;color:var(--muted2);letter-spacing:4px;text-transform:uppercase;margin-bottom:50px;opacity:0;animation:fadeUp .6s .8s forwards;}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:50px;max-width:520px;width:100%;opacity:0;animation:fadeUp .6s 1s forwards;}
+.hst{background:var(--bg1);padding:26px 20px;text-align:center;}
+.hst-n{font-family:'Orbitron',monospace;font-size:2.1rem;font-weight:800;color:var(--accent);display:block;filter:drop-shadow(0 0 12px var(--accent-glow));}
+.hst-l{font-size:.56rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:4px;display:block;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .6s 1.2s forwards;}
+.lc-wrap-outer{opacity:0;animation:fadeUp .6s 1.4s forwards;margin-top:0;}
+.lc-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+.lc-grid{display:flex;gap:8px;justify-content:center;align-items:center;}
+.lc-box{background:rgba(0,229,201,.04);border:1px solid var(--border2);padding:16px 20px;min-width:88px;text-align:center;position:relative;overflow:hidden;}
+.lc-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.7;}
+.lc-box.red::before{background:linear-gradient(90deg,transparent,var(--red),transparent);}
+.lc-n{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:700;color:var(--accent);display:block;filter:drop-shadow(0 0 8px var(--accent-glow));}
+.lc-box.red .lc-n{color:var(--red);filter:drop-shadow(0 0 8px var(--red-glow));}
+.lc-l{font-size:.52rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:4px;display:block;}
+.lc-sep{font-family:'Orbitron',sans-serif;font-size:1.5rem;color:var(--border2);margin-top:-10px;}
+.hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp .6s 1.7s forwards;}
+.hero-scroll span{font-size:.54rem;letter-spacing:4px;color:var(--muted);text-transform:uppercase;}
+.scroll-line{width:1px;height:36px;background:linear-gradient(180deg,var(--accent),transparent);animation:scrollPulse 1.8s ease-in-out infinite;}
+
+/* PROGRESS */
+.prog-sec{background:rgba(6,10,24,.6);border:1px solid var(--border);border-radius:var(--r);padding:30px 34px;margin-top:0;}
+.prog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.prog-title{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:3px;color:var(--accent);}
+.prog-count{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--gold);}
+.prog-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;width:0;transition:width 1.6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px var(--accent-glow);}
+.prog-sub{font-size:.72rem;color:var(--muted);margin-top:10px;letter-spacing:1px;}
+
+/* SECTION HEADER */
+.sec-tag{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:5px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;display:block;}
+.sec-div{height:1px;background:linear-gradient(90deg,var(--accent),var(--gold),transparent);width:80px;margin-bottom:20px;box-shadow:0 0 10px var(--accent-glow);}
+.sec-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:2px;line-height:1;margin-bottom:10px;background:linear-gradient(135deg,#fff,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sec-sub{font-size:.82rem;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;margin-bottom:52px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:13px 26px;cursor:none;border:none;transition:all .25s;text-decoration:none;position:relative;overflow:hidden;border-radius:3px;}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%);transform:translateX(-100%);transition:transform .5s;}
+.btn:hover::before{transform:translateX(100%);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#00b8a0);color:#000;font-weight:700;}
+.btn-primary:hover{box-shadow:0 0 32px var(--accent-glow);transform:translateY(-2px);}
+.btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--border2);}
+.btn-secondary:hover{background:rgba(0,229,201,.06);border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2);}
+.btn-discord{background:linear-gradient(135deg,#5865F2,#4752c4);color:#fff;}
+.btn-discord:hover{box-shadow:0 0 24px rgba(88,101,242,.5);transform:translateY(-2px);}
+.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(255,45,85,.3);font-size:.7rem;padding:8px 14px;}
+.btn-danger:hover{background:rgba(255,45,85,.08);border-color:var(--red);}
+.btn-sm{padding:9px 18px;font-size:.7rem;}
+.btn-orange{background:linear-gradient(135deg,var(--gold),#e6a300);color:#000;font-weight:700;}
+
+/* GLASS CARD */
+.gc{background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--r);padding:30px;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .3s;}
+.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s;}
+.gc:hover{border-color:var(--border2);box-shadow:0 0 40px rgba(0,229,201,.06);transform:translateY(-3px);}
+.gc:hover::before{opacity:1;}
+.gc h3{font-family:'Orbitron',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:12px;}
+.gc p{color:var(--muted2);line-height:1.8;font-size:.93rem;}
+
+/* HOME CARDS */
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:50px;}
+.hcard{background:rgba(6,10,24,.6);border:1px solid var(--border);border-radius:var(--r);padding:34px 24px;text-align:center;cursor:none;transition:all .3s;position:relative;overflow:hidden;}
+.hcard::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(0,229,201,.06),transparent 60%);opacity:0;transition:opacity .3s;}
+.hcard:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 8px 40px rgba(0,229,201,.08);}
+.hcard:hover::after{opacity:1;}
+.hcard-icon{font-size:2.3rem;margin-bottom:12px;display:block;}
+.hcard-title{font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:5px;}
+.hcard-sub{font-size:.76rem;color:var(--muted);letter-spacing:1px;}
+
+/* LEADERBOARD */
+.lb-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.lb-panel{background:rgba(6,10,24,.75);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.lb-head{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(0,229,201,.03);}
+.lb-head-icon{font-size:1.5rem;}
+.lb-head-title{font-family:'Orbitron',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:3px;color:var(--accent);}
+.lb-head-sub{font-size:.58rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-family:'DM Mono',monospace;}
+.lb-body{padding:10px;}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:4px;transition:background .2s;position:relative;}
+.lb-row::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:3px;background:transparent;}
+.lb-row:hover{background:rgba(0,229,201,.04);}
+.lb-row.r1::before{background:var(--gold);box-shadow:0 0 8px var(--gold-glow);}
+.lb-row.r2::before{background:var(--silver);}
+.lb-row.r3::before{background:var(--bronze);}
+.lb-rank{font-family:'Orbitron',monospace;font-size:.76rem;width:30px;text-align:center;color:var(--muted);flex-shrink:0;}
+.lb-row.r1 .lb-rank{color:var(--gold);font-size:.92rem;filter:drop-shadow(0 0 5px var(--gold-glow));}
+.lb-row.r2 .lb-rank{color:var(--silver);}
+.lb-row.r3 .lb-rank{color:var(--bronze);}
+.lb-ava{width:32px;height:32px;border-radius:6px;background:rgba(0,229,201,.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0;}
+.lb-name{flex:1;font-size:.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lb-val{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--gold);white-space:nowrap;filter:drop-shadow(0 0 4px var(--gold-glow));}
+.lb-empty{padding:36px;text-align:center;color:var(--muted);font-size:.85rem;}
+
+/* EVENTS */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+.ev-card{background:rgba(6,10,24,.8);border:1px solid var(--border);border-radius:var(--r);padding:26px;position:relative;overflow:hidden;transition:all .3s;}
+.ev-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold));opacity:.6;transition:opacity .3s;}
+.ev-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 32px rgba(255,45,85,.08);}
+.ev-card:hover::after{opacity:1;}
+.ev-date{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:3px;color:var(--red);margin-bottom:8px;text-transform:uppercase;}
+.ev-title{font-family:'Orbitron',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:2px;color:#fff;margin-bottom:8px;line-height:1.3;}
+.ev-desc{color:var(--muted2);font-size:.88rem;line-height:1.7;}
+.ev-badge{display:inline-flex;align-items:center;gap:5px;font-size:.58rem;letter-spacing:2px;padding:3px 10px;margin-top:12px;text-transform:uppercase;font-weight:700;border-radius:2px;}
+.ev-badge.competition{background:rgba(255,45,85,.1);border:1px solid rgba(255,45,85,.3);color:var(--red);}
+.ev-badge.evenement{background:rgba(0,229,201,.08);border:1px solid var(--border2);color:var(--accent);}
+.ev-badge.annonce{background:rgba(255,183,0,.1);border:1px solid rgba(255,183,0,.3);color:var(--gold);}
+.no-events{padding:70px;text-align:center;color:var(--muted);background:rgba(6,10,24,.5);border:1px solid var(--border);border-radius:var(--r);}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+.obj-sec{background:rgba(6,10,24,.7);border:1px solid var(--border);border-radius:var(--r);padding:36px;position:relative;overflow:hidden;margin-bottom:22px;}
+.obj-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold));box-shadow:0 0 20px var(--accent-glow);}
+.obj-sec h3{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:3px;margin-bottom:20px;}
+.obj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.obj-item{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;background:rgba(0,229,201,.03);border:1px solid var(--border);border-radius:4px;transition:border-color .2s;}
+.obj-item:hover{border-color:var(--border2);background:rgba(0,229,201,.05);}
+.obj-em{font-size:1.05rem;flex-shrink:0;margin-top:1px;}
+.obj-txt{font-size:.9rem;color:var(--muted2);line-height:1.5;}
+.cta-sec{background:linear-gradient(135deg,rgba(0,229,201,.07),rgba(255,183,0,.04));border:1px solid var(--border2);border-radius:var(--r);padding:38px;text-align:center;position:relative;overflow:hidden;}
+.cta-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(0,229,201,.07),transparent 60%);pointer-events:none;}
+.cta-sec p{font-size:1.1rem;font-weight:500;margin-bottom:18px;letter-spacing:.5px;}
+.cta-sec span{color:var(--accent);}
+
+/* FORM */
+.form-wrap{max-width:680px;margin:0 auto;}
+.form-card{background:rgba(6,10,24,.88);border:1px solid var(--border);border-radius:var(--r);padding:42px;position:relative;overflow:hidden;}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--accent),var(--gold));box-shadow:0 0 16px var(--accent-glow);}
+.form-notice{background:rgba(0,229,201,.05);border:1px solid rgba(0,229,201,.15);border-radius:4px;padding:13px 16px;margin-bottom:26px;font-size:.84rem;color:var(--muted2);}
+.form-notice strong{color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{margin-bottom:18px;}
+.fl{display:block;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:7px;font-weight:600;}
+.fi,.fs,.ft{width:100%;background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:12px 15px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+.fi:focus,.fs:focus,.ft:focus{border-color:rgba(0,229,201,.4);box-shadow:0 0 0 3px rgba(0,229,201,.06);}
+.fi::placeholder,.ft::placeholder{color:var(--muted);}
+.fs option{background:#060a18;}
+.ft{resize:vertical;min-height:96px;line-height:1.6;}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;right:30px;background:rgba(6,10,24,.96);backdrop-filter:blur(20px);border:1px solid var(--border2);border-radius:6px;padding:15px 22px;z-index:9999;font-size:.88rem;font-weight:500;letter-spacing:.5px;box-shadow:0 4px 40px rgba(0,229,201,.12);transform:translateY(20px) scale(.95);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);max-width:340px;}
+.toast.show{transform:translateY(0) scale(1);opacity:1;}
+.toast.error{border-color:rgba(255,45,85,.4);}
+
+/* FOOTER */
+footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:26px 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(3,5,15,.5);}
+.fl2{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:3px;color:var(--muted2);}
+.fl2 span{color:var(--accent);}
+.fr{font-size:.7rem;color:var(--muted);letter-spacing:2px;}
+.fr a{color:var(--accent);text-decoration:none;}
+
+/* ADMIN */
+#admin-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(3,5,15,.97);}
+#admin-overlay.open{display:flex;}
+.adm-side{width:242px;flex-shrink:0;background:rgba(6,10,24,.95);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.adm-logo{padding:22px 20px;border-bottom:1px solid var(--border);}
+.adm-logo-t{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:800;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.adm-logo-s{font-size:.58rem;letter-spacing:3px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;}
+.adm-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.adm-grp{padding:14px 18px 5px;font-size:.54rem;letter-spacing:4px;color:var(--muted);text-transform:uppercase;font-family:'DM Mono',monospace;}
+.adm-item{display:flex;align-items:center;gap:9px;padding:11px 18px;cursor:pointer;color:var(--muted2);font-size:.84rem;font-weight:500;transition:all .2s;border-left:2px solid transparent;letter-spacing:.5px;}
+.adm-item:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.adm-item.active{color:var(--accent);background:rgba(0,229,201,.05);border-left-color:var(--accent);}
+.adm-foot{padding:16px 18px;border-top:1px solid var(--border);}
+.adm-main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.adm-bar{padding:16px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(6,10,24,.8);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.adm-bar h2{font-family:'Orbitron',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:4px;color:#fff;}
+.adm-content{padding:26px;flex:1;}
+.adm-tab{display:none;}
+.adm-tab.active{display:block;}
+.adm-card{background:rgba(8,14,32,.8);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:18px;}
+.adm-card-t{font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:3px;color:var(--gold);margin-bottom:16px;}
+.adm-g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.adm-g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;}
+.qg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px;}
+.qc{background:rgba(8,14,32,.8);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center;cursor:pointer;transition:all .25s;}
+.qc:hover{border-color:var(--border2);transform:translateY(-2px);}
+.qc .qi{font-size:1.5rem;margin-bottom:7px;}
+.qc .ql{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:3px;}
+.qc .qs{font-size:.66rem;color:var(--muted);}
+.stat-big{text-align:center;padding:18px;background:rgba(0,229,201,.03);border:1px solid var(--border);border-radius:4px;}
+.stat-big-n{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;}
+.stat-big-l{font-size:.58rem;letter-spacing:3px;color:var(--muted);margin-top:4px;}
+.lb-adm-row{display:grid;grid-template-columns:34px 1fr 146px 40px;gap:8px;align-items:center;padding:7px 10px;margin-bottom:6px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:3px;}
+.ev-adm-row{display:flex;align-items:center;gap:10px;padding:11px 13px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:4px;margin-bottom:7px;}
+.ev-adm-row .eai{flex:1;}
+.ev-adm-row .eat{font-weight:600;font-size:.88rem;margin-bottom:2px;}
+.ev-adm-row .ead{font-size:.7rem;color:var(--muted);font-family:'DM Mono',monospace;}
+.clr-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:4px;margin-bottom:9px;}
+.clr-row label{flex:1;font-size:.82rem;color:var(--text);letter-spacing:0;text-transform:none;margin:0;}
+.clr-row input[type=color]{width:46px;height:33px;padding:2px;border-radius:4px;cursor:pointer;border:1px solid var(--border);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:44px 0;}
+
+#pass-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);z-index:300;align-items:center;justify-content:center;}
+#pass-modal.open{display:flex;}
+.pass-box{background:rgba(6,10,24,.97);border:1px solid var(--border2);border-radius:var(--r);padding:46px;min-width:340px;text-align:center;box-shadow:0 0 80px rgba(0,229,201,.1);}
+.pass-box h3{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:4px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:22px;}
+
+input,select,textarea,.fi,.fs,.ft{cursor:none !important;}
+button{cursor:none !important;} a{cursor:none !important;}
+
+/* RESPONSIVE */
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer !important;padding:8px;}
+.burger span{display:block;width:24px;height:2px;background:var(--accent);border-radius:2px;transition:transform .3s,opacity .3s;}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+@media(max-width:900px){
+  .lb-wrap,.about-grid,.adm-g2,.adm-g3,.qg,.form-row,.obj-grid{grid-template-columns:1fr;}
+  .hgrid{grid-template-columns:1fr 1fr;}
+  .adm-side{width:200px;}
+  .container{padding:60px 28px;}
+}
+@media(max-width:640px){
+  body{cursor:auto;padding-bottom:68px;}
+  #cursor,#cursor-ring{display:none;}
+  input,select,textarea,.fi,.fs,.ft{cursor:auto !important;font-size:16px !important;}
+  button,a{cursor:pointer !important;}
+  header{padding:0 18px;height:60px;}
+  header nav,.hdisc{display:none;}
+  .burger{display:flex;}
+  #drawer{display:block;}
+  #bnav{display:block;}
+  .hero{padding:36px 20px 52px;min-height:calc(100svh - 60px);}
+  .hero-h1{font-size:clamp(3.6rem,17vw,6rem);letter-spacing:-1px;}
+  .hero-sub{font-size:.8rem;letter-spacing:2px;}
+  .hero-stats{max-width:100%;}
+  .hst{padding:18px 10px;}
+  .hst-n{font-size:1.7rem;}
+  .hero-cta .btn{padding:12px 18px;font-size:.72rem;}
+  .hero-scroll{display:none;}
+  .lc-grid{gap:5px;}
+  .lc-box{min-width:62px;padding:11px 8px;}
+  .lc-n{font-size:1.35rem;}
+  .lc-sep{font-size:1.2rem;}
+  .container{padding:38px 18px;}
+  .hgrid{grid-template-columns:1fr;gap:10px;}
+  .hcard{padding:20px;display:flex;align-items:center;gap:14px;text-align:left;}
+  .hcard-icon{font-size:1.9rem;margin-bottom:0;flex-shrink:0;}
+  .lb-wrap{grid-template-columns:1fr;gap:14px;}
+  .ev-grid{grid-template-columns:1fr;}
+  .about-grid,.obj-grid{grid-template-columns:1fr;}
+  .obj-sec{padding:26px 18px;}
+  .form-row{grid-template-columns:1fr;}
+  .form-card{padding:24px 18px;}
+  .prog-sec{padding:20px 18px;}
+  .prog-head{flex-direction:column;align-items:flex-start;gap:5px;}
+  .sec-title{font-size:1.7rem;}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:18px 18px calc(68px + 16px);}
+  .adm-side{display:none;}
+  .pass-box{min-width:unset;width:90vw;padding:30px 22px;}
+}
+@media(max-width:380px){
+  .hero-h1{font-size:3.2rem;}
+  .lc-box{min-width:52px;padding:9px 6px;}
+  .lc-n{font-size:1.15rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div id="loader">
+  <div class="ld-logo">ZEGG</div>
+  <div class="ld-sub">Car Dealership Tycoon • Roblox</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+
+<canvas id="cv"></canvas>
+
+<header id="hdr">
+  <a class="logo" href="#" onclick="showPage('home',document.querySelector('.nb'));return false;">
+    <span class="logo-t">ZEGG</span>
+    <span class="logo-b">CDT TEAM</span>
+  </a>
+  <nav>
+    <button class="nb active" onclick="showPage('home',this)">Accueil</button>
+    <button class="nb" onclick="showPage('tops',this)">🏆 Tops</button>
+    <button class="nb" onclick="showPage('events',this)">📅 Événements</button>
+    <button class="nb" onclick="showPage('about',this)">La Team</button>
+    <button class="nb" onclick="showPage('inscription',this)">Rejoindre</button>
+  </nav>
+  <a id="h-disc" href="https://discord.gg/Pntpchsa" target="_blank" class="hdisc">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054A19.9 19.9 0 0 0 6.1 21.025a.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    Discord
+  </a>
+  <button class="burger" id="burger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</header>
+
+<div id="drawer">
+  <div class="dr-bg" onclick="toggleDrawer()"></div>
+  <div class="dr-panel">
+    <div class="dr-item active" onclick="mNav('home')">🏠 Accueil</div>
+    <div class="dr-item" onclick="mNav('tops')">🏆 Tops</div>
+    <div class="dr-item" onclick="mNav('events')">📅 Événements</div>
+    <div class="dr-item" onclick="mNav('about')">👥 La Team</div>
+    <div class="dr-item" onclick="mNav('inscription')">⚡ Rejoindre</div>
+    <a id="dr-disc" href="https://discord.gg/Pntpchsa" target="_blank" class="dr-disc">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054A19.9 19.9 0 0 0 6.1 21.025a.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Rejoindre le Discord
+    </a>
+  </div>
+</div>
+
+<nav id="bnav">
+  <div class="bnav-wrap">
+    <button class="bni active" id="bn-home" onclick="mNav('home')"><span class="bni-icon">🏠</span><span class="bni-label">Accueil</span></button>
+    <button class="bni" id="bn-tops" onclick="mNav('tops')"><span class="bni-icon">🏆</span><span class="bni-label">Tops</span></button>
+    <button class="bni" id="bn-events" onclick="mNav('events')"><span class="bni-icon">📅</span><span class="bni-label">Events</span></button>
+    <button class="bni" id="bn-about" onclick="mNav('about')"><span class="bni-icon">👥</span><span class="bni-label">Team</span></button>
+    <button class="bni" id="bn-inscription" onclick="mNav('inscription')"><span class="bni-icon">⚡</span><span class="bni-label">Rejoindre</span></button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="section active">
+  <div class="hero">
+    <div class="hero-tag" id="h-eyebrow">🚗 Car Dealership Tycoon • Roblox</div>
+    <h1 class="hero-h1" id="h-title"><span class="line1">TEAM</span><span class="line2">ZEGG</span></h1>
+    <p class="hero-sub" id="h-subtitle">La référence sur CDT — Rejoins l'élite</p>
+    <div class="hero-stats">
+      <div class="hst"><span class="hst-n" id="stat-members">0</span><span class="hst-l">Membres</span></div>
+      <div class="hst"><span class="hst-n" id="stat-season">2026</span><span class="hst-l">Saison</span></div>
+      <div class="hst"><span class="hst-n" id="stat-goal">80</span><span class="hst-l">Objectif</span></div>
+    </div>
+    <div class="lc-wrap-outer">
+      <div class="lc-tag" id="h-clabel">⏱ Team ZEGG existe depuis</div>
+      <div class="lc-grid">
+        <div class="lc-box"><span class="lc-n" id="lc-d">000</span><span class="lc-l">Jours</span></div>
+        <div class="lc-sep">:</div>
+        <div class="lc-box"><span class="lc-n" id="lc-h">00</span><span class="lc-l">Heures</span></div>
+        <div class="lc-sep">:</div>
+        <div class="lc-box"><span class="lc-n" id="lc-m">00</span><span class="lc-l">Minutes</span></div>
+        <div class="lc-sep">:</div>
+        <div class="lc-box red"><span class="lc-n" id="lc-s">00</span><span class="lc-l">Secondes</span></div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a id="cta-d1" href="https://discord.gg/Pntpchsa" target="_blank" class="btn btn-discord">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054A19.9 19.9 0 0 0 6.1 21.025a.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Rejoindre le Discord
+      </a>
+      <button class="btn btn-secondary" onclick="showPage('inscription',document.querySelectorAll('.nb')[4])">📝 Postuler à la Team</button>
+    </div>
+    <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+  </div>
+  <div class="container" style="padding-top:10px;">
+    <div class="prog-sec reveal">
+      <div class="prog-head"><span class="prog-title">📈 PROGRESSION VERS L'OBJECTIF</span><span class="prog-count" id="prog-count">0 / 80</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="prog-sub">Aide la team à atteindre les 80 membres avant 2027 !</div>
+    </div>
+    <div class="hgrid">
+      <div class="hcard reveal reveal-d1" onclick="showPage('tops',document.querySelectorAll('.nb')[1])"><span class="hcard-icon">💰</span><div class="hcard-title">Top Money</div><div class="hcard-sub">Les plus riches de la team</div></div>
+      <div class="hcard reveal reveal-d2" onclick="showPage('tops',document.querySelectorAll('.nb')[1])"><span class="hcard-icon">🛣️</span><div class="hcard-title">Top Miles</div><div class="hcard-sub">Les plus actifs sur CDT</div></div>
+      <div class="hcard reveal reveal-d3" onclick="showPage('inscription',document.querySelectorAll('.nb')[4])"><span class="hcard-icon">⚡</span><div class="hcard-title">Rejoindre</div><div class="hcard-sub">Postuler à la Team ZEGG</div></div>
+    </div>
+    <div id="home-ann" style="margin-top:24px;"></div>
+  </div>
+</div>
+
+<!-- TOPS -->
+<div id="page-tops" class="section">
+  <div class="container">
+    <span class="sec-tag reveal">Classements officiels</span>
+    <div class="sec-div reveal"></div>
+    <h2 class="sec-title reveal">TOP ZEGG</h2>
+    <p class="sec-sub reveal" id="tops-sub">Mis à jour par les admins — Résultats en jeu</p>
+    <div class="lb-wrap">
+      <div class="lb-panel reveal reveal-d1"><div class="lb-head"><span class="lb-head-icon">💰</span><div><div class="lb-head-title">Top Money</div><div class="lb-head-sub">$ in-game</div></div></div><div class="lb-body" id="money-list"></div></div>
+      <div class="lb-panel reveal reveal-d2"><div class="lb-head"><span class="lb-head-icon">🛣️</span><div><div class="lb-head-title">Top Miles</div><div class="lb-head-sub">Miles parcourus</div></div></div><div class="lb-body" id="miles-list"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<div id="page-events" class="section">
+  <div class="container">
+    <span class="sec-tag reveal">Calendrier</span>
+    <div class="sec-div reveal"></div>
+    <h2 class="sec-title reveal">ÉVÉNEMENTS</h2>
+    <p class="sec-sub reveal" id="events-sub">Compétitions, events & annonces de la Team ZEGG</p>
+    <div id="ev-grid" class="ev-grid"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="section">
+  <div class="container">
+    <span class="sec-tag reveal">À propos</span>
+    <div class="sec-div reveal"></div>
+    <h2 class="sec-title reveal" id="about-title">QUI SOMMES-NOUS</h2>
+    <p class="sec-sub reveal" id="about-sub">La Team ZEGG sur Car Dealership Tycoon</p>
+    <div class="about-grid">
+      <div class="gc reveal reveal-d1"><h3 id="c1t">🚗 Notre Team</h3><p id="c1p">La Team ZEGG est une communauté sérieuse et active sur Car Dealership Tycoon (Roblox). Nous rassemblons des joueurs passionnés qui cherchent à progresser ensemble, s'entraider et dominer le jeu.</p></div>
+      <div class="gc reveal reveal-d2"><h3 id="c2t">⚔️ Notre Ambition</h3><p id="c2p">Nous visons à devenir la référence absolue sur CDT. Chaque membre est important et contribue à la croissance de la team. Ensemble, on vise les sommets.</p></div>
+    </div>
+    <div class="obj-sec reveal"><h3 id="obj-title">🎯 OBJECTIFS 2026</h3><div class="obj-grid" id="obj-list"></div></div>
+    <div class="cta-sec reveal">
+      <p id="cta-text">🔥 <span>Rejoins-nous maintenant</span> et aide la team à atteindre les <span>80 membres</span> ! 🚗💸</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a id="cta-d2" href="https://discord.gg/Pntpchsa" target="_blank" class="btn btn-discord">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054A19.9 19.9 0 0 0 6.1 21.025a.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Discord
+        </a>
+        <button class="btn btn-secondary" onclick="showPage('inscription',document.querySelectorAll('.nb')[4])">📝 Postuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INSCRIPTION -->
+<div id="page-inscription" class="section">
+  <div class="container">
+    <span class="sec-tag reveal">Candidature</span>
+    <div class="sec-div reveal"></div>
+    <h2 class="sec-title reveal" id="insc-title">REJOINDRE ZEGG</h2>
+    <p class="sec-sub reveal" id="insc-sub">Remplis le formulaire — ta demande sera envoyée sur notre Discord</p>
+    <div class="form-wrap">
+      <div class="form-card reveal">
+        <div class="form-notice">✅ <strong>Ta candidature sera envoyée directement sur le Discord de la Team ZEGG.</strong></div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Pseudo Roblox *</label><input class="fi" id="f-roblox" placeholder="TonPseudo" type="text"></div>
+          <div class="fg"><label class="fl">Pseudo Discord *</label><input class="fi" id="f-discord" placeholder="pseudo#0000" type="text"></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Money en jeu *</label><input class="fi" id="f-money" placeholder="Ex: $2.5M" type="text"></div>
+          <div class="fg"><label class="fl">Miles *</label><input class="fi" id="f-miles" placeholder="Ex: 15 000 miles" type="text"></div>
+        </div>
+        <div class="fg"><label class="fl">Pourquoi rejoindre la Team ZEGG ?</label><textarea class="ft" id="f-reason" placeholder="Présente-toi et explique ta motivation..."></textarea></div>
+        <div class="fg"><label class="fl">Disponibilité</label>
+          <select class="fs" id="f-dispo"><option value="">Sélectionne...</option><option>Tous les jours</option><option>Week-end uniquement</option><option>Quelques fois par semaine</option><option>Occasionnel</option></select>
+        </div>
+        <button class="btn btn-primary" id="submit-btn" style="width:100%;justify-content:center;font-size:.85rem;padding:15px;" onclick="submitForm()">🚀 Envoyer ma candidature</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer id="site-footer">
+  <div class="fl2">⚡ <span>TEAM ZEGG</span> — Car Dealership Tycoon</div>
+  <div class="fr">© 2026 &nbsp;|&nbsp; <a id="foot-disc" href="https://discord.gg/Pntpchsa" target="_blank">Discord</a></div>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<div id="pass-modal">
+  <div class="pass-box">
+    <h3>🔐 ACCÈS ADMIN</h3>
+    <input class="fi" type="password" id="admin-pass" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkPass()" style="text-align:center;letter-spacing:4px;font-family:'DM Mono',monospace;margin-bottom:14px;">
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn btn-primary btn-sm" onclick="checkPass()">Entrer</button>
+      <button class="btn btn-ghost btn-sm" onclick="closePass()">Annuler</button>
+    </div>
+    <div id="pass-error" style="color:var(--red);font-size:.78rem;margin-top:10px;min-height:16px;"></div>
+  </div>
+</div>
+
+<div id="admin-overlay">
+  <div class="adm-side">
+    <div class="adm-logo"><div class="adm-logo-t">⚙ ADMIN</div><div class="adm-logo-s">PANEL ZEGG</div></div>
+    <div class="adm-nav">
+      <div class="adm-grp">Vue d'ensemble</div>
+      <div class="adm-item active" onclick="aTab('dashboard',this)">📊 Dashboard</div>
+      <div class="adm-grp">Contenu</div>
+      <div class="adm-item" onclick="aTab('textes',this)">✏️ Textes & Titres</div>
+      <div class="adm-item" onclick="aTab('about-edit',this)">👥 Qui sommes-nous</div>
+      <div class="adm-item" onclick="aTab('objectives-edit',this)">🎯 Objectifs</div>
+      <div class="adm-grp">Classements</div>
+      <div class="adm-item" onclick="aTab('money-edit',this)">💰 Top Money</div>
+      <div class="adm-item" onclick="aTab('miles-edit',this)">🛣️ Top Miles</div>
+      <div class="adm-grp">Événements</div>
+      <div class="adm-item" onclick="aTab('events-edit',this)">📅 Créer / Gérer</div>
+      <div class="adm-grp">Paramètres</div>
+      <div class="adm-item" onclick="aTab('settings',this)">🔗 Liens & Config</div>
+      <div class="adm-item" onclick="aTab('design',this)">🎨 Couleurs</div>
+    </div>
+    <div class="adm-foot"><button class="btn btn-danger btn-sm" style="width:100%;justify-content:center;" onclick="closeAdmin()">✕ Fermer</button></div>
+  </div>
+  <div class="adm-main">
+    <div class="adm-bar"><h2 id="adm-title">DASHBOARD</h2><div style="display:flex;align-items:center;gap:12px;"><span id="session-timer" style="font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:2px;color:var(--muted);"></span><button class="btn btn-primary btn-sm" onclick="saveAll()">💾 Sauvegarder</button></div></div>
+    <div class="adm-content">
+
+      <div class="adm-tab active" id="tab-dashboard">
+        <div class="qg">
+          <div class="qc" onclick="aTab('textes',document.querySelectorAll('.adm-item')[1])"><div class="qi">✏️</div><div class="ql">Textes</div><div class="qs">Titres, sous-titres</div></div>
+          <div class="qc" onclick="aTab('money-edit',document.querySelectorAll('.adm-item')[4])"><div class="qi">💰</div><div class="ql">Top Money</div><div class="qs" id="d-mc">— joueurs</div></div>
+          <div class="qc" onclick="aTab('miles-edit',document.querySelectorAll('.adm-item')[5])"><div class="qi">🛣️</div><div class="ql">Top Miles</div><div class="qs" id="d-mi">— joueurs</div></div>
+          <div class="qc" onclick="aTab('events-edit',document.querySelectorAll('.adm-item')[6])"><div class="qi">📅</div><div class="ql">Événements</div><div class="qs" id="d-ev">— events</div></div>
+          <div class="qc" onclick="aTab('settings',document.querySelectorAll('.adm-item')[7])"><div class="qi">🔗</div><div class="ql">Paramètres</div><div class="qs">Discord, webhook</div></div>
+          <div class="qc" onclick="aTab('design',document.querySelectorAll('.adm-item')[8])"><div class="qi">🎨</div><div class="ql">Couleurs</div><div class="qs">Thème du site</div></div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">📈 Statistiques</div>
+          <div class="adm-g3">
+            <div class="stat-big"><div class="stat-big-n" style="color:var(--accent);" id="d-mem">—</div><div class="stat-big-l">MEMBRES</div></div>
+            <div class="stat-big"><div class="stat-big-n" style="color:var(--gold);" id="d-goal">—</div><div class="stat-big-l">OBJECTIF</div></div>
+            <div class="stat-big"><div class="stat-big-n" style="color:var(--red);" id="d-evb">—</div><div class="stat-big-l">ÉVÉNEMENTS</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-textes">
+        <div class="adm-card"><div class="adm-card-t">🏠 Hero — Accueil</div>
+          <div class="adm-g2">
+            <div class="fg"><label class="fl">Petite ligne du haut</label><input class="fi" id="c-eyebrow" type="text"></div>
+            <div class="fg"><label class="fl">Sous-titre</label><input class="fi" id="c-subtitle" type="text"></div>
+            <div class="fg"><label class="fl">Titre ligne 1</label><input class="fi" id="c-title1" type="text"></div>
+            <div class="fg"><label class="fl">Titre ligne 2</label><input class="fi" id="c-title2" type="text"></div>
+            <div class="fg"><label class="fl">Nombre de membres</label><input class="fi" id="c-members" type="number"></div>
+            <div class="fg"><label class="fl">Objectif membres</label><input class="fi" id="c-goal" type="number"></div>
+            <div class="fg"><label class="fl">Saison</label><input class="fi" id="c-season" type="text"></div>
+            <div class="fg"><label class="fl">Label compteur live</label><input class="fi" id="c-clabel" type="text"></div>
+          </div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">📄 Autres pages</div>
+          <div class="fg"><label class="fl">Sous-titre page Tops</label><input class="fi" id="c-topssub" type="text"></div>
+          <div class="fg"><label class="fl">Sous-titre page Événements</label><input class="fi" id="c-eventsub" type="text"></div>
+          <div class="adm-g2">
+            <div class="fg"><label class="fl">Titre Inscription</label><input class="fi" id="c-insctitle" type="text"></div>
+            <div class="fg"><label class="fl">Sous-titre Inscription</label><input class="fi" id="c-inscsub" type="text"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-about-edit">
+        <div class="adm-card"><div class="adm-card-t">👥 En-tête page</div>
+          <div class="adm-g2">
+            <div class="fg"><label class="fl">Titre</label><input class="fi" id="c-abouttitle" type="text"></div>
+            <div class="fg"><label class="fl">Sous-titre</label><input class="fi" id="c-aboutsub" type="text"></div>
+          </div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">📋 Carte 1</div>
+          <div class="fg"><label class="fl">Titre</label><input class="fi" id="c-c1t" type="text"></div>
+          <div class="fg"><label class="fl">Texte</label><textarea class="ft" id="c-c1p"></textarea></div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">📋 Carte 2</div>
+          <div class="fg"><label class="fl">Titre</label><input class="fi" id="c-c2t" type="text"></div>
+          <div class="fg"><label class="fl">Texte</label><textarea class="ft" id="c-c2p"></textarea></div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">🔥 Appel à l'action</div>
+          <div class="fg"><label class="fl">Texte CTA</label><textarea class="ft" id="c-ctatext" rows="2"></textarea></div>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-objectives-edit">
+        <div class="adm-card"><div class="adm-card-t">🎯 Titre section</div>
+          <div class="fg"><label class="fl">Titre</label><input class="fi" id="c-objtitle" type="text"></div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">📋 Objectifs</div>
+          <div id="obj-adm"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addObj()">+ Ajouter</button>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-money-edit">
+        <div class="adm-card"><div class="adm-card-t">💰 Top Money</div>
+          <div style="display:grid;grid-template-columns:34px 1fr 146px 40px;gap:8px;padding:5px 10px;font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;font-family:'DM Mono',monospace;"><div>#</div><div>Pseudo</div><div>Money</div><div></div></div>
+          <div id="adm-money"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addLB('money')">+ Ajouter un joueur</button>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-miles-edit">
+        <div class="adm-card"><div class="adm-card-t">🛣️ Top Miles</div>
+          <div style="display:grid;grid-template-columns:34px 1fr 146px 40px;gap:8px;padding:5px 10px;font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;font-family:'DM Mono',monospace;"><div>#</div><div>Pseudo</div><div>Miles</div><div></div></div>
+          <div id="adm-miles"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addLB('miles')">+ Ajouter un joueur</button>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-events-edit">
+        <div class="adm-card"><div class="adm-card-t">➕ Créer un événement</div>
+          <div class="adm-g2">
+            <div class="fg"><label class="fl">Titre *</label><input class="fi" id="ev-title" placeholder="Ex: Tournoi Money" type="text"></div>
+            <div class="fg"><label class="fl">Date</label><input class="fi" id="ev-date" type="date"></div>
+          </div>
+          <div class="fg"><label class="fl">Description</label><textarea class="ft" id="ev-desc" placeholder="Décris l'événement..."></textarea></div>
+          <div class="adm-g2">
+            <div class="fg"><label class="fl">Type</label><select class="fs" id="ev-type"><option value="evenement">Événement</option><option value="competition">Compétition</option><option value="annonce">Annonce</option></select></div>
+            <div class="fg"><label class="fl">Emoji</label><input class="fi" id="ev-emoji" placeholder="🏆" maxlength="4" type="text"></div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="addEvent()">➕ Créer l'événement</button>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">📋 Événements existants</div><div id="adm-events"></div></div>
+      </div>
+
+      <div class="adm-tab" id="tab-settings">
+        <div class="adm-card"><div class="adm-card-t">🔗 Liens Discord</div>
+          <div class="fg"><label class="fl">Lien Discord</label><input class="fi" id="c-disclink" type="url"></div>
+          <div class="fg"><label class="fl">URL Webhook (candidatures)</label><input class="fi" id="c-webhook" type="url"></div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">⏱ Date de création</div>
+          <div class="fg"><label class="fl">Date de naissance de la team</label><input class="fi" id="c-birth" type="date"></div>
+        </div>
+        <div class="adm-card"><div class="adm-card-t">🔐 Changer le mot de passe admin</div>
+          <div style="background:rgba(0,229,201,.05);border:1px solid rgba(0,229,201,.15);border-radius:4px;padding:12px 14px;margin-bottom:16px;font-size:.8rem;color:var(--muted2);line-height:1.6;">🔒 <strong style="color:var(--accent);">Sécurité :</strong> Le mot de passe est hashé en SHA-256 — il n'est jamais stocké en clair. La session expire après 30 minutes d'inactivité. 3 tentatives max avant blocage 5 minutes.</div>
+          <div class="adm-g2">
+            <div class="fg"><label class="fl">Nouveau mot de passe (min. 8 car.)</label><input class="fi" id="c-newpass" type="password" placeholder="Nouveau mot de passe"></div>
+            <div class="fg"><label class="fl">Confirmer</label><input class="fi" id="c-confpass" type="password" placeholder="Confirmer"></div>
+          </div>
+          <button class="btn btn-orange btn-sm" onclick="changePass()">🔐 Changer</button>
+        </div>
+      </div>
+
+      <div class="adm-tab" id="tab-design">
+        <div class="adm-card"><div class="adm-card-t">🎨 Couleurs du site (temps réel)</div>
+          <p style="color:var(--muted2);font-size:.82rem;margin-bottom:16px;line-height:1.6;">Modifications visibles immédiatement.</p>
+          <div class="clr-row"><label>🟢 Couleur principale</label><input type="color" id="clr-accent" oninput="pClr('--accent',this.value)"></div>
+          <div class="clr-row"><label>🟡 Couleur or</label><input type="color" id="clr-gold" oninput="pClr('--gold',this.value)"></div>
+          <div class="clr-row"><label>🔴 Couleur rouge</label><input type="color" id="clr-red" oninput="pClr('--red',this.value)"></div>
+          <div class="clr-row"><label>⬛ Fond principal</label><input type="color" id="clr-bg" oninput="pClr('--bg',this.value)"></div>
+          <div class="clr-row"><label>⬛ Fond panneaux</label><input type="color" id="clr-bg1" oninput="pClr('--bg1',this.value)"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;">
+            <button class="btn btn-primary btn-sm" onclick="saveColors()">💾 Sauvegarder</button>
+            <button class="btn btn-ghost btn-sm" onclick="resetColors()">↩ Réinitialiser</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ CURSOR ══
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function animR(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
+
+// ══ CANVAS ══
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+class P{
+  constructor(){this.r();}
+  r(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.s=Math.random()*1.4+.3;this.o=Math.random()*.5+.1;this.c=Math.random()>.7?'0,229,201':'255,183,0';}
+  u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.r();}
+  d(){cx.beginPath();cx.arc(this.x,this.y,this.s,0,Math.PI*2);cx.fillStyle=`rgba(${this.c},${this.o})`;cx.fill();}
+}
+const isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+for(let i=0;i<(isTouch?25:75);i++)pts.push(new P());
+(function anim(){
+  cx.clearRect(0,0,W,H);
+  pts.forEach(p=>p.u());
+  if(!isTouch){for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<110){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.strokeStyle=`rgba(0,229,201,${.05*(1-d/110)})`;cx.lineWidth=.5;cx.stroke();}}}
+  pts.forEach(p=>p.d());
+  requestAnimationFrame(anim);
+})();
+
+// ══ LOADER ══
+function hideLoader(){const l=document.getElementById('loader');if(l&&!l.classList.contains('hidden')){l.classList.add('hidden');triggerReveal();}}
+setTimeout(hideLoader,2500);
+window.addEventListener('load',()=>setTimeout(hideLoader,1800));
+
+// ══ SCROLL HEADER ══
+window.addEventListener('scroll',()=>document.getElementById('hdr').classList.toggle('sc',scrollY>20));
+
+// ══ REVEAL ══
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.1});
+function triggerReveal(){document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));}
+
+// ══ DATA ══
+const DEF={
+  money:[
+    {name:'VORTEX_ZEGG',value:'31.0 B',emoji:'🔥'},{name:'ALEXX_ZEGG',value:'30.7 B',emoji:'🚗'},
+    {name:'Kevinoug',value:'18.2 B',emoji:'💸'},{name:'TGL_ZYARMXLZEGG',value:'14.8 B',emoji:'🔥'},
+    {name:'Th3dachimann_Zegg',value:'9.8 B',emoji:'🏅'},{name:'AEL_Austin2005ZEGG',value:'6.7 B',emoji:'🏅'},
+    {name:'GG_ZEGG',value:'5 B',emoji:'🔥'},{name:'XxABSxX_KSA26Zegg',value:'2.7 B',emoji:'🏅'},
+    {name:'frexos_zegg',value:'2.1 B',emoji:'🏅'},{name:'JeSuisGabinZEGG',value:'1.8 B',emoji:'🏅'},
+    {name:'GwensGire_ZEGG',value:'1.7 B',emoji:'🏅'},{name:'BELLA_ZEGG',value:'1.7 B',emoji:'🔥'},
+    {name:'Yin_zegg',value:'1.6 B',emoji:'🏅'},{name:'Darkhell_ZEGG',value:'1.5 B',emoji:'🎖️'},
+    {name:'Darkstare_ZEGG',value:'1.5 B',emoji:'🎖️'},{name:'Noxut12_ZEGG',value:'1.4 B',emoji:'🎖️'},
+    {name:'WARRIOR_ZEGG',value:'1.2 B',emoji:'🎖️'},{name:'matt_ZEGG',value:'1.1 B',emoji:'🎖️'},
+    {name:'Mathieu154k_zegg',value:'1.1 B',emoji:'🎖️'},{name:'MAP_ZEGG',value:'1 B',emoji:'🎖️'},
+    {name:'Euhh_ZEGG',value:'600 M',emoji:'🎖️'},{name:'Leo_zegg',value:'544 M',emoji:'🎖️'},
+    {name:'Foxy_ZEGG',value:'150 M',emoji:'🎖️'},{name:'RubyHoshino_zegg',value:'130 M',emoji:'🎖️'},
+    {name:'Ravex77_ZEGG',value:'100 M',emoji:'🎖️'},{name:'Maxou1205_zegg',value:'3 M',emoji:'🎖️'},
+  ],
+  miles:[
+    {name:'VORTEX_ZEGG',value:'1800000',emoji:'🔥'},{name:'ALEXX_ZEGG',value:'1500000',emoji:'🚗'},
+    {name:'Kevinoug',value:'1200000',emoji:'💸'},{name:'Th3dachimann_Zegg',value:'550000',emoji:'🏅'},
+    {name:'JeSuisGabinZEGG',value:'296000',emoji:'🏅'},{name:'AEL_Austin2005ZEGG',value:'270000',emoji:'🏅'},
+    {name:'Darkhell_ZEGG',value:'229000',emoji:'🏅'},{name:'GG_ZEGG',value:'220000',emoji:'🏅'},
+    {name:'Yin_Zegg',value:'179000',emoji:'🏅'},{name:'XxABSxX_KSA26Zegg',value:'170000',emoji:'🏅'},
+    {name:'Mathieu154k_ZEGG',value:'150000',emoji:'🎖️'},{name:'Euhh_ZEGG',value:'107000',emoji:'🎖️'},
+    {name:'frexos_zegg',value:'100000',emoji:'🎖️'},{name:'NathLvA_ZEGG',value:'95000',emoji:'🎖️'},
+    {name:'Noxut12_ZEGG',value:'90000',emoji:'🎖️'},{name:'WARRIOR_ZEGG',value:'90000',emoji:'🎖️'},
+    {name:'matt_Zegg',value:'85000',emoji:'🎖️'},{name:'4bd_Zegg',value:'55000',emoji:'⬜'},
+    {name:'leo_zegg',value:'50000',emoji:'⬜'},{name:'Matteo_ZEGG',value:'45000',emoji:'⬜'},
+    {name:'Zeto87t_ZEGG',value:'36000',emoji:'⬜'},{name:'Maxou1205_zegg',value:'31000',emoji:'⬜'},
+    {name:'bella_zegg',value:'30000',emoji:'⬜'},{name:'FOXY_ZEGG',value:'21300',emoji:'⬜'},
+  ],
+  events:[],
+  objectives:[
+    {emoji:'🚀',text:'Développer une communauté active et sérieuse'},
+    {emoji:'👥',text:'Atteindre 80 membres avant 2027'},
+    {emoji:'🏁',text:'Organiser plus d\'événements et compétitions'},
+    {emoji:'📈',text:'Aider chaque membre à progresser et gagner plus'},
+    {emoji:'⭐',text:'Devenir une référence sur Car Dealership Tycoon'},
+  ],
+  cfg:{
+    eyebrow:'🚗 Car Dealership Tycoon • Roblox',title1:'TEAM',title2:'ZEGG',
+    subtitle:'La référence sur CDT — Rejoins l\'élite',members:26,goal:80,season:'2026',
+    counterLabel:'⏱ Team ZEGG existe depuis',
+    topsSub:'Mis à jour par les admins — Résultats en jeu',
+    eventsSub:'Compétitions, events & annonces de la Team ZEGG',
+    aboutTitle:'QUI SOMMES-NOUS',aboutSub:'La Team ZEGG sur Car Dealership Tycoon',
+    c1t:'🚗 Notre Team',c1p:'La Team ZEGG est une communauté sérieuse et active sur Car Dealership Tycoon (Roblox). Nous rassemblons des joueurs passionnés qui cherchent à progresser ensemble, s\'entraider et dominer le jeu.',
+    c2t:'⚔️ Notre Ambition',c2p:'Nous visons à devenir la référence absolue sur CDT. Chaque membre est important et contribue à la croissance de la team. Ensemble, on vise les sommets.',
+    objTitle:'🎯 OBJECTIFS 2026',
+    ctaText:'🔥 <span>Rejoins-nous maintenant</span> et aide la team à atteindre les <span>80 membres</span> ! 🚗💸',
+    inscTitle:'REJOINDRE ZEGG',inscSub:'Remplis le formulaire — ta demande sera envoyée sur notre Discord',
+    discordLink:'https://discord.gg/Pntpchsa',
+    webhook:'https://discord.com/api/webhooks/1491506525250785321/wisOQlBZzxwVQX-8RRux9tLER2xX-dgHFWbpbvHAygPQZNSspjbkoeS1avN714LaAo3k',
+    birthDate:'2024-11-01',
+    colors:{accent:'#00e5c9',gold:'#ffb700',red:'#ff2d55',bg:'#03050f',bg1:'#060a18'}
+  }
+};
+let D={};
+function load(){try{const s=localStorage.getItem('zegg_v5');D=s?JSON.parse(s):JSON.parse(JSON.stringify(DEF));}catch(e){D=JSON.parse(JSON.stringify(DEF));}Object.keys(DEF).forEach(k=>{if(D[k]===undefined)D[k]=JSON.parse(JSON.stringify(DEF[k]));});if(!D.cfg)D.cfg=JSON.parse(JSON.stringify(DEF.cfg));if(!D.cfg.colors)D.cfg.colors=JSON.parse(JSON.stringify(DEF.cfg.colors));}
+function save(){localStorage.setItem('zegg_v5',JSON.stringify(D));}
+
+// ══ NAV ══
+function showPage(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo(0,0);
+  setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>obs.observe(el)),80);
+  renderAll();
+}
+
+// ══ MOBILE NAV ══
+function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.getElementById('burger').classList.toggle('open');}
+function mNav(page){
+  document.getElementById('drawer').classList.remove('open');document.getElementById('burger').classList.remove('open');
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('active'));
+  const bn=document.getElementById('bn-'+page);if(bn)bn.classList.add('active');
+  document.querySelectorAll('.dr-item').forEach(b=>b.classList.remove('active'));
+  const pages=['home','tops','events','about','inscription'];
+  const items=document.querySelectorAll('.dr-item');
+  const idx=pages.indexOf(page);if(items[idx])items[idx].classList.add('active');
+  showPage(page,document.querySelectorAll('.nb')[idx]);
+}
+
+// ══ PARSE ══
+function pv(v){const s=String(v).replace(/[\s,]/g,'').toUpperCase();if(s.includes('B'))return parseFloat(s)*1e9;if(s.includes('M'))return parseFloat(s)*1e6;return parseFloat(s.replace(/[^0-9.]/g,''))||0;}
+function fmtMi(v){const n=pv(v);if(n>=1e6)return(n/1e6).toFixed(1).replace(/\.0$/,'')+' M mi';if(n>=1000)return Math.round(n/1000)+' K mi';return Math.round(n)+' mi';}
+const RI=['🥇','🥈','🥉'];
+
+// ══ RENDER ══
+function renderLB(type,elId){
+  const el=document.getElementById(elId);if(!el)return;
+  const list=[...D[type]].sort((a,b)=>pv(b.value)-pv(a.value));
+  if(!list.length){el.innerHTML='<div class="lb-empty">Aucune donnée</div>';return;}
+  el.innerHTML=list.map((p,i)=>`<div class="lb-row ${i===0?'r1':i===1?'r2':i===2?'r3':''}"><span class="lb-rank">${i<3?RI[i]:'#'+(i+1)}</span><div class="lb-ava">${p.emoji||'🎮'}</div><span class="lb-name">${p.name}</span><span class="lb-val">${type==='miles'?fmtMi(p.value):p.value}</span></div>`).join('');
+}
+
+function renderEvents(){
+  const el=document.getElementById('ev-grid');if(!el)return;
+  if(!D.events||!D.events.length){el.innerHTML='<div class="no-events">📅 Aucun événement pour le moment.<br><span style="font-size:.8rem;color:var(--muted);">Revenez bientôt !</span></div>';return;}
+  const s=[...D.events].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  el.innerHTML=s.map(ev=>`<div class="ev-card"><div class="ev-date">${fmtDate(ev.date)}</div><div class="ev-title">${ev.emoji||'📅'} ${ev.title}</div><div class="ev-desc">${ev.desc||''}</div><span class="ev-badge ${ev.type}">${ev.type.charAt(0).toUpperCase()+ev.type.slice(1)}</span></div>`).join('');
+}
+function fmtDate(d){if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}).toUpperCase();}
+
+function renderObj(){
+  const el=document.getElementById('obj-list');if(!el)return;
+  el.innerHTML=(D.objectives||[]).map(o=>`<div class="obj-item"><span class="obj-em">${o.emoji}</span><span class="obj-txt">${o.text}</span></div>`).join('');
+}
+
+function renderTexts(){
+  const c=D.cfg;
+  const si=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined)e.innerHTML=v;};
+  const st=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined)e.textContent=v;};
+  si('h-eyebrow',c.eyebrow);
+  const ht=document.getElementById('h-title');if(ht)ht.innerHTML=`<span class="line1">${c.title1||'TEAM'}</span><span class="line2">${c.title2||'ZEGG'}</span>`;
+  st('h-subtitle',c.subtitle);st('h-clabel',c.counterLabel);
+  st('tops-sub',c.topsSub);st('events-sub',c.eventsSub);
+  st('about-title',c.aboutTitle);st('about-sub',c.aboutSub);
+  st('c1t',c.c1t);st('c1p',c.c1p);st('c2t',c.c2t);st('c2p',c.c2p);
+  st('obj-title',c.objTitle);st('insc-title',c.inscTitle);st('insc-sub',c.inscSub);
+  si('cta-text',c.ctaText);
+  const dl=c.discordLink||'https://discord.gg/Pntpchsa';
+  ['h-disc','cta-d1','cta-d2','foot-disc','dr-disc'].forEach(id=>{const e=document.getElementById(id);if(e)e.href=dl;});
+  const se=document.getElementById('stat-season');if(se)se.textContent=c.season||'2026';
+  animN('stat-members',parseInt(c.members)||0);animN('stat-goal',parseInt(c.goal)||80);
+  const mem=parseInt(c.members)||0,goal=parseInt(c.goal)||80,pct=Math.min(100,Math.round(mem/goal*100));
+  const pf=document.getElementById('prog-fill');if(pf)setTimeout(()=>pf.style.width=pct+'%',500);
+  const pc=document.getElementById('prog-count');if(pc)pc.textContent=`${mem} / ${goal} membres`;
+}
+function renderColors(){const c=D.cfg.colors||{};Object.entries(c).forEach(([k,v])=>document.documentElement.style.setProperty('--'+k,v));}
+function renderHomeAnn(){
+  const el=document.getElementById('home-ann');if(!el)return;
+  const ann=(D.events||[]).filter(e=>e.type==='annonce').slice(0,2);
+  if(!ann.length){el.innerHTML='';return;}
+  el.innerHTML='<div style="font-family:\'Orbitron\',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:4px;color:var(--gold);margin-bottom:12px;">📢 ANNONCES</div>'+ann.map(a=>`<div class="ev-card" style="margin-bottom:10px;"><div class="ev-date">${fmtDate(a.date)}</div><div class="ev-title">${a.emoji||'📢'} ${a.title}</div><div class="ev-desc">${a.desc||''}</div></div>`).join('');
+}
+function animN(id,target){const el=document.getElementById(id);if(!el)return;let c=0;const step=Math.max(1,Math.floor(target/40));const iv=setInterval(()=>{c=Math.min(c+step,target);el.textContent=c;if(c>=target){el.textContent=target;clearInterval(iv);}},35);}
+function renderAll(){renderTexts();renderObj();renderLB('money','money-list');renderLB('miles','miles-list');renderEvents();renderHomeAnn();}
+
+// ══ LIVE COUNTER ══
+function startCounter(){
+  const birth=new Date((D.cfg.birthDate||'2024-11-01')+'T00:00:00');
+  const pad=(n,l=2)=>String(n).padStart(l,'0');
+  function tick(){const diff=Date.now()-birth.getTime();const s=Math.floor(diff/1000);
+    const de=document.getElementById('lc-d');if(de)de.textContent=pad(Math.floor(s/86400),3);
+    const he=document.getElementById('lc-h');if(he)he.textContent=pad(Math.floor(s/3600)%24);
+    const me=document.getElementById('lc-m');if(me)me.textContent=pad(Math.floor(s/60)%60);
+    const se=document.getElementById('lc-s');if(se)se.textContent=pad(s%60);
+  }
+  tick();setInterval(tick,1000);
+}
+
+// ══ SECURE AUTH ══
+const HASH_KEY = 'zegg_pwd_hash';
+const ATTEMPT_KEY = 'zegg_attempts';
+const SESSION_KEY = 'zegg_session';
+const SESSION_DURATION = 30 * 60 * 1000; // 30 min
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_DURATION = 5 * 60 * 1000; // 5 min
+
+// SHA-256 hash via Web Crypto API
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Get stored hash (or set default on first run)
+async function getStoredHash(){
+  let h = localStorage.getItem(HASH_KEY);
+  if(!h){
+    // First run: hash the default password and store it
+    h = await sha256('p6SA3*^NQz4nDgFG2UI^X&Zp');
+    localStorage.setItem(HASH_KEY, h);
+  }
+  return h;
+}
+
+// Check lockout
+function getLockout(){
+  try{ return JSON.parse(localStorage.getItem(ATTEMPT_KEY))||{count:0,until:0}; }
+  catch(e){ return {count:0,until:0}; }
+}
+function setLockout(data){ localStorage.setItem(ATTEMPT_KEY, JSON.stringify(data)); }
+
+function isLockedOut(){
+  const d=getLockout();
+  if(d.until && Date.now()<d.until) return Math.ceil((d.until-Date.now())/1000);
+  return false;
+}
+
+function recordFailedAttempt(){
+  const d=getLockout();
+  d.count=(d.count||0)+1;
+  if(d.count>=MAX_ATTEMPTS){ d.until=Date.now()+LOCKOUT_DURATION; d.count=0; }
+  setLockout(d);
+  return MAX_ATTEMPTS-d.count;
+}
+function resetAttempts(){ localStorage.removeItem(ATTEMPT_KEY); }
+
+// Session management
+function startSession(){ localStorage.setItem(SESSION_KEY, String(Date.now()+SESSION_DURATION)); }
+function isSessionValid(){
+  const exp=parseInt(localStorage.getItem(SESSION_KEY)||'0');
+  return Date.now()<exp;
+}
+function refreshSession(){ if(isSessionValid()) localStorage.setItem(SESSION_KEY, String(Date.now()+SESSION_DURATION)); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+// Session activity refresh
+document.addEventListener('click',()=>{ if(document.getElementById('admin-overlay').classList.contains('open')) refreshSession(); });
+
+// Auto-logout when session expires
+setInterval(()=>{
+  if(document.getElementById('admin-overlay').classList.contains('open') && !isSessionValid()){
+    closeAdmin(); showToast('⏱ Session expirée — reconnecte-toi'); clearSession();
+  }
+},30000);
+
+function openPass(){
+  const locked=isLockedOut();
+  if(locked){ showToast(`🔒 Compte bloqué — réessaie dans ${Math.ceil(locked/60)} min`,true); return; }
+  document.getElementById('admin-pass').value='';
+  document.getElementById('pass-error').textContent='';
+  document.getElementById('pass-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('admin-pass').focus(),80);
+}
+function closePass(){ document.getElementById('pass-modal').classList.remove('open'); }
+
+async function checkPass(){
+  const locked=isLockedOut();
+  if(locked){ document.getElementById('pass-error').textContent=`🔒 Bloqué ${Math.ceil(locked/60)} min`; return; }
+  const input=document.getElementById('admin-pass').value;
+  if(!input){ document.getElementById('pass-error').textContent='❌ Entre un mot de passe'; return; }
+  const inputHash=await sha256(input);
+  const storedHash=await getStoredHash();
+  if(inputHash===storedHash){
+    resetAttempts(); startSession(); closePass(); openAdmin();
+  } else {
+    const rem=recordFailedAttempt();
+    if(rem>0) document.getElementById('pass-error').textContent=`❌ Incorrect — ${rem} tentative(s) restante(s)`;
+    else document.getElementById('pass-error').textContent=`🔒 Compte bloqué 5 minutes`;
+    document.getElementById('admin-pass').value='';
+  }
+}
+
+async function changePass(){
+  const np=document.getElementById('c-newpass').value.trim();
+  const cp=document.getElementById('c-confpass').value.trim();
+  if(!np||np.length<8){showToast('❌ Minimum 8 caractères',true);return;}
+  if(np!==cp){showToast('❌ Les mots de passe ne correspondent pas',true);return;}
+  const newHash=await sha256(np);
+  localStorage.setItem(HASH_KEY, newHash);
+  document.getElementById('c-newpass').value='';
+  document.getElementById('c-confpass').value='';
+  showToast('✅ Mot de passe changé avec succès !');
+}
+
+function openAdmin(){
+  if(!isSessionValid()){ openPass(); return; }
+  document.getElementById('admin-overlay').classList.add('open');
+  aTab('dashboard',document.querySelector('.adm-item'));
+  loadForms();
+  // Show session timer
+  updateSessionTimer();
+}
+function closeAdmin(){ document.getElementById('admin-overlay').classList.remove('open'); }
+
+function updateSessionTimer(){
+  const el=document.getElementById('session-timer');
+  if(!el||!document.getElementById('admin-overlay').classList.contains('open')) return;
+  const rem=Math.max(0,parseInt(localStorage.getItem(SESSION_KEY)||'0')-Date.now());
+  const min=Math.floor(rem/60000),sec=Math.floor((rem%60000)/1000);
+  el.textContent=`Session : ${min}:${String(sec).padStart(2,'0')}`;
+  el.style.color=rem<5*60000?'var(--red)':'var(--muted)';
+  setTimeout(updateSessionTimer,1000);
+}
+function aTab(id,el){
+  document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.adm-item').forEach(b=>b.classList.remove('active'));
+  const tab=document.getElementById('tab-'+id);if(tab)tab.classList.add('active');
+  if(el)el.classList.add('active');
+  const titles={dashboard:'Dashboard',textes:'Textes & Titres','about-edit':'Qui sommes-nous','objectives-edit':'Objectifs','money-edit':'Top Money','miles-edit':'Top Miles','events-edit':'Événements',settings:'Paramètres',design:'Couleurs'};
+  const pt=document.getElementById('adm-title');if(pt)pt.textContent=(titles[id]||id).toUpperCase();
+  if(id==='money-edit')renderAdmLB('money');
+  if(id==='miles-edit')renderAdmLB('miles');
+  if(id==='events-edit')renderAdmEv();
+  if(id==='objectives-edit')renderAdmObj();
+  if(id==='dashboard')updDash();
+}
+function updDash(){
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('d-mc',(D.money||[]).length+' joueurs');s('d-mi',(D.miles||[]).length+' joueurs');s('d-ev',(D.events||[]).length+' events');
+  s('d-mem',D.cfg.members||0);s('d-goal',D.cfg.goal||80);s('d-evb',(D.events||[]).length);
+}
+function loadForms(){
+  const c=D.cfg||{},sv=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined)e.value=v;};
+  sv('c-eyebrow',c.eyebrow);sv('c-title1',c.title1);sv('c-title2',c.title2);sv('c-subtitle',c.subtitle);
+  sv('c-members',c.members);sv('c-goal',c.goal);sv('c-season',c.season);sv('c-clabel',c.counterLabel);
+  sv('c-topssub',c.topsSub);sv('c-eventsub',c.eventsSub);
+  sv('c-abouttitle',c.aboutTitle);sv('c-aboutsub',c.aboutSub);
+  sv('c-c1t',c.c1t);sv('c-c1p',c.c1p);sv('c-c2t',c.c2t);sv('c-c2p',c.c2p);
+  sv('c-objtitle',c.objTitle);sv('c-ctatext',c.ctaText);
+  sv('c-insctitle',c.inscTitle);sv('c-inscsub',c.inscSub);
+  sv('c-disclink',c.discordLink);sv('c-webhook',c.webhook);sv('c-birth',c.birthDate||'2024-11-01');
+  const col=c.colors||{};
+  sv('clr-accent',col.accent||'#00e5c9');sv('clr-gold',col.gold||'#ffb700');sv('clr-red',col.red||'#ff2d55');sv('clr-bg',col.bg||'#03050f');sv('clr-bg1',col.bg1||'#060a18');
+}
+function saveAll(){
+  const gv=(id,fb='')=>{const e=document.getElementById(id);return e?e.value:fb;};
+  const c=D.cfg;
+  c.eyebrow=gv('c-eyebrow')||c.eyebrow;c.title1=gv('c-title1')||c.title1;c.title2=gv('c-title2')||c.title2;
+  c.subtitle=gv('c-subtitle')||c.subtitle;c.members=parseInt(gv('c-members'))||c.members;c.goal=parseInt(gv('c-goal'))||c.goal;
+  c.season=gv('c-season')||c.season;c.counterLabel=gv('c-clabel')||c.counterLabel;
+  c.topsSub=gv('c-topssub')||c.topsSub;c.eventsSub=gv('c-eventsub')||c.eventsSub;
+  c.aboutTitle=gv('c-abouttitle')||c.aboutTitle;c.aboutSub=gv('c-aboutsub')||c.aboutSub;
+  c.c1t=gv('c-c1t')||c.c1t;c.c1p=gv('c-c1p')||c.c1p;c.c2t=gv('c-c2t')||c.c2t;c.c2p=gv('c-c2p')||c.c2p;
+  c.objTitle=gv('c-objtitle')||c.objTitle;c.ctaText=gv('c-ctatext')||c.ctaText;
+  c.inscTitle=gv('c-insctitle')||c.inscTitle;c.inscSub=gv('c-inscsub')||c.inscSub;
+  c.discordLink=gv('c-disclink')||c.discordLink;c.webhook=gv('c-webhook')||c.webhook;c.birthDate=gv('c-birth')||c.birthDate;
+  saveLBDOM('money');saveLBDOM('miles');syncObj();
+  save();renderAll();updDash();showToast('✅ Tout sauvegardé !');
+}
+
+// LB ADMIN
+function renderAdmLB(type){
+  const el=document.getElementById('adm-'+type);if(!el)return;
+  const list=[...D[type]].sort((a,b)=>pv(b.value)-pv(a.value));
+  el.innerHTML=list.map((p,i)=>`<div class="lb-adm-row" data-t="${type}" data-i="${i}"><div style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);text-align:center;">${i<3?RI[i]:'#'+(i+1)}</div><input class="fi nm" type="text" value="${p.name}" style="font-size:.83rem;padding:7px 10px;"><input class="fi vl" type="text" value="${p.value}" style="font-size:.83rem;padding:7px 10px;"><button class="btn btn-danger" style="padding:5px 8px;font-size:.62rem;" onclick="delLB('${type}',${i})">✕</button></div>`).join('');
+}
+function saveLBDOM(type){
+  const rows=document.querySelectorAll(`.lb-adm-row[data-t="${type}"]`);if(!rows.length)return;
+  const sorted=[...D[type]].sort((a,b)=>pv(b.value)-pv(a.value));
+  rows.forEach((r,i)=>{const ins=r.querySelectorAll('input');if(sorted[i]){sorted[i].name=ins[0]?ins[0].value:sorted[i].name;sorted[i].value=ins[1]?ins[1].value:sorted[i].value;}});
+  D[type]=sorted;
+}
+function addLB(type){D[type].push({name:'Nouveau joueur',value:type==='money'?'0 M':'0',emoji:'🎮'});renderAdmLB(type);}
+function delLB(type,i){const s=[...D[type]].sort((a,b)=>pv(b.value)-pv(a.value));s.splice(i,1);D[type]=s;renderAdmLB(type);}
+
+// EVENTS ADMIN
+function addEvent(){
+  const title=document.getElementById('ev-title').value.trim();if(!title){showToast('❌ Titre obligatoire',true);return;}
+  D.events.push({id:Date.now(),title,date:document.getElementById('ev-date').value,desc:document.getElementById('ev-desc').value.trim(),type:document.getElementById('ev-type').value,emoji:document.getElementById('ev-emoji').value.trim()||'📅'});
+  save();renderAdmEv();renderEvents();renderHomeAnn();updDash();
+  ['ev-title','ev-date','ev-desc','ev-emoji'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  showToast('✅ Événement créé !');
+}
+function renderAdmEv(){
+  const el=document.getElementById('adm-events');if(!el)return;
+  if(!D.events||!D.events.length){el.innerHTML='<div style="color:var(--muted);font-size:.82rem;padding:14px;">Aucun événement.</div>';return;}
+  const s=[...D.events].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  el.innerHTML=s.map(ev=>`<div class="ev-adm-row"><div class="eai"><div class="eat">${ev.emoji} ${ev.title} <span class="ev-badge ${ev.type}" style="margin-left:6px;">${ev.type}</span></div><div class="ead">${fmtDate(ev.date)}</div></div><button class="btn btn-danger btn-sm" onclick="delEv(${ev.id})">✕</button></div>`).join('');
+}
+function delEv(id){D.events=D.events.filter(e=>e.id!==id);save();renderAdmEv();renderEvents();renderHomeAnn();updDash();showToast('🗑 Supprimé');}
+
+// OBJECTIVES ADMIN
+function renderAdmObj(){
+  const el=document.getElementById('obj-adm');if(!el)return;
+  el.innerHTML=(D.objectives||[]).map((o,i)=>`<div style="display:grid;grid-template-columns:50px 1fr 40px;gap:8px;margin-bottom:8px;align-items:center;"><input class="fi" type="text" value="${o.emoji}" style="text-align:center;font-size:1rem;padding:7px;" maxlength="4" onchange="D.objectives[${i}].emoji=this.value"><input class="fi" type="text" value="${o.text}" style="font-size:.83rem;padding:7px 10px;" onchange="D.objectives[${i}].text=this.value"><button class="btn btn-danger" style="padding:6px 9px;font-size:.62rem;" onclick="delObj(${i})">✕</button></div>`).join('');
+}
+function addObj(){if(!D.objectives)D.objectives=[];D.objectives.push({emoji:'⭐',text:'Nouvel objectif'});renderAdmObj();}
+function delObj(i){D.objectives.splice(i,1);renderAdmObj();}
+function syncObj(){const rows=document.querySelectorAll('#obj-adm > div');rows.forEach((r,i)=>{const ins=r.querySelectorAll('input');if(D.objectives[i]){D.objectives[i].emoji=ins[0]?ins[0].value:D.objectives[i].emoji;D.objectives[i].text=ins[1]?ins[1].value:D.objectives[i].text;}});}
+
+// COLORS
+function pClr(v,val){document.documentElement.style.setProperty(v,val);}
+function saveColors(){D.cfg.colors={accent:document.getElementById('clr-accent').value,gold:document.getElementById('clr-gold').value,red:document.getElementById('clr-red').value,bg:document.getElementById('clr-bg').value,bg1:document.getElementById('clr-bg1').value};save();showToast('🎨 Couleurs sauvegardées !');}
+function resetColors(){const def=DEF.cfg.colors;Object.entries(def).forEach(([k,v])=>document.documentElement.style.setProperty('--'+k,v));D.cfg.colors=JSON.parse(JSON.stringify(def));loadForms();save();showToast('↩ Réinitialisé');}
+
+// FORM SUBMIT
+const WEBHOOK = 'https://discord.com/api/webhooks/1491506525250785321/wisOQlBZzxwVQX-8RRux9tLER2xX-dgHFWbpbvHAygPQZNSspjbkoeS1avN714LaAo3k';
+
+async function submitForm(){
+  const rb=document.getElementById('f-roblox').value.trim(),dc=document.getElementById('f-discord').value.trim();
+  const mn=document.getElementById('f-money').value.trim(),mi=document.getElementById('f-miles').value.trim();
+  const rs=document.getElementById('f-reason').value.trim(),dp=document.getElementById('f-dispo').value;
+  if(!rb||!dc||!mn||!mi){showToast('❌ Remplis les champs obligatoires',true);return;}
+  const payload=JSON.stringify({username:'ZEGG Bot 🚗',embeds:[{title:'🚗 Nouvelle candidature — Team ZEGG',color:0x00e5c9,
+    fields:[{name:'🎮 Roblox',value:rb,inline:true},{name:'💬 Discord',value:dc,inline:true},{name:'💰 Money',value:mn,inline:true},{name:'🛣️ Miles',value:mi,inline:true},{name:'🕐 Dispo',value:dp||'Non précisé',inline:true},{name:'📝 Motivation',value:rs||'Aucune précision',inline:false}],
+    footer:{text:'Team ZEGG • '+new Date().toLocaleDateString('fr-FR')},timestamp:new Date().toISOString()}]});
+  const btn=document.getElementById('submit-btn');
+  btn.textContent='⏳ Envoi...';btn.disabled=true;
+  const fd=new FormData();
+  fd.append('payload_json',payload);
+  try{
+    const resp=await fetch(WEBHOOK,{method:'POST',body:fd});
+    if(!resp.ok) throw new Error(resp.status);
+    showToast('✅ Candidature envoyée ! On te contactera sur Discord.');
+    ['f-roblox','f-discord','f-money','f-miles','f-reason'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-dispo').value='';
+  }catch(e){
+    showToast('❌ Erreur réseau. Rejoins le Discord directement !',true);
+  }
+  btn.textContent='🚀 Envoyer ma candidature';btn.disabled=false;
+}
+
+// TOAST
+function showToast(msg,err=false){const t=document.getElementById('toast');t.textContent=msg;t.classList.toggle('error',err);t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+
+// SECRET: triple-click footer
+let cc=0,ct=null;
+document.getElementById('site-footer').addEventListener('click',()=>{cc++;clearTimeout(ct);ct=setTimeout(()=>cc=0,600);if(cc>=3){cc=0;openPass();}});
+document.getElementById('pass-modal').addEventListener('click',function(e){if(e.target===this)closePass();});
+
+// INIT
+load();renderColors();renderAll();startCounter();
+</script>
+</body>
+</html>
