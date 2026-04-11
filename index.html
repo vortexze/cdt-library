@@ -242,8 +242,9 @@ nav{display:flex;gap:2px;}
 .ft{resize:vertical;min-height:96px;line-height:1.6;}
 
 /* PROFILE MODAL */
-#profile-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;cursor:auto !important;}
+#profile-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;cursor:auto !important;padding:20px;}
 #profile-modal.open{display:flex;}
+.profile-card{margin:auto;}
 #profile-modal *{cursor:auto !important;}
 #profile-modal a:hover,.profile-close:hover,.hof-card:hover{cursor:pointer !important;}
 .profile-card{background:rgba(6,10,24,.97);border:1px solid var(--border2);border-radius:16px;padding:0;min-width:340px;max-width:400px;text-align:center;box-shadow:0 0 80px rgba(0,229,201,.15);overflow:hidden;animation:celeb-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
