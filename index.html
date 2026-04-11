@@ -242,8 +242,10 @@ nav{display:flex;gap:2px;}
 .ft{resize:vertical;min-height:96px;line-height:1.6;}
 
 /* PROFILE MODAL */
-#profile-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;}
+#profile-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;cursor:auto !important;}
 #profile-modal.open{display:flex;}
+#profile-modal *{cursor:auto !important;}
+#profile-modal a:hover,.profile-close:hover,.hof-card:hover{cursor:pointer !important;}
 .profile-card{background:rgba(6,10,24,.97);border:1px solid var(--border2);border-radius:16px;padding:0;min-width:340px;max-width:400px;text-align:center;box-shadow:0 0 80px rgba(0,229,201,.15);overflow:hidden;animation:celeb-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
 .profile-banner{height:100px;background:linear-gradient(135deg,rgba(0,229,201,.2),rgba(255,183,0,.15));position:relative;}
 .profile-avatar{width:90px;height:90px;border-radius:50%;border:3px solid var(--accent);position:absolute;bottom:-45px;left:50%;transform:translateX(-50%);background:var(--bg1);object-fit:cover;box-shadow:0 0 20px var(--accent-glow);}
@@ -375,7 +377,7 @@ html.light .faq-item{background:rgba(255,255,255,.7);}
 .hof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:24px;}
 .hof-card{background:rgba(6,10,24,.7);border:1px solid var(--border);border-radius:var(--r);padding:24px 18px;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
 .hof-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--accent));opacity:.6;}
-.hof-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 8px 32px rgba(255,183,0,.1);}
+.hof-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 8px 32px rgba(255,183,0,.1);cursor:pointer !important;}
 .hof-emoji{font-size:2.5rem;margin-bottom:8px;}
 .hof-name{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:6px;}
 .hof-role{font-size:.72rem;color:var(--gold);font-weight:600;letter-spacing:1px;margin-bottom:4px;}
