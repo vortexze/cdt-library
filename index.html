@@ -241,6 +241,26 @@ nav{display:flex;gap:2px;}
 .fs option{background:#060a18;}
 .ft{resize:vertical;min-height:96px;line-height:1.6;}
 
+/* PROFILE MODAL */
+#profile-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;}
+#profile-modal.open{display:flex;}
+.profile-card{background:rgba(6,10,24,.97);border:1px solid var(--border2);border-radius:16px;padding:0;min-width:340px;max-width:400px;text-align:center;box-shadow:0 0 80px rgba(0,229,201,.15);overflow:hidden;animation:celeb-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
+.profile-banner{height:100px;background:linear-gradient(135deg,rgba(0,229,201,.2),rgba(255,183,0,.15));position:relative;}
+.profile-avatar{width:90px;height:90px;border-radius:50%;border:3px solid var(--accent);position:absolute;bottom:-45px;left:50%;transform:translateX(-50%);background:var(--bg1);object-fit:cover;box-shadow:0 0 20px var(--accent-glow);}
+.profile-body{padding:55px 30px 30px;}
+.profile-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:2px;color:var(--accent);margin-bottom:4px;}
+.profile-role{font-size:.75rem;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+.profile-links{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.profile-link{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text);font-size:.85rem;font-weight:500;transition:all .2s;}
+.profile-link:hover{border-color:var(--accent);background:rgba(0,229,201,.06);transform:translateX(4px);}
+.profile-link-icon{font-size:1.2rem;width:28px;text-align:center;}
+.profile-link-label{font-size:.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.profile-link-value{color:var(--text);font-weight:600;}
+.profile-close{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:1.1rem;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.profile-close:hover{background:rgba(255,45,85,.4);}
+html.light .profile-card{background:rgba(240,242,245,.97);}
+@media(max-width:640px){.profile-card{min-width:unset;width:90vw;}}
+
 /* TOAST */
 .toast{position:fixed;bottom:30px;right:30px;background:rgba(6,10,24,.96);backdrop-filter:blur(20px);border:1px solid var(--border2);border-radius:6px;padding:15px 22px;z-index:9999;font-size:.88rem;font-weight:500;letter-spacing:.5px;box-shadow:0 4px 40px rgba(0,229,201,.12);transform:translateY(20px) scale(.95);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);max-width:340px;}
 .toast.show{transform:translateY(0) scale(1);opacity:1;}
@@ -583,9 +603,9 @@ html.light .hof-card{background:rgba(255,255,255,.7);}
     <div class="obj-sec reveal" style="margin-top:22px;">
       <h3>🎖️ HIÉRARCHIE 🎖️</h3>
       <div class="hof-grid" id="hof-grid">
-        <div class="hof-card"><div class="hof-emoji">👑</div><div class="hof-name">VORTEX_ZEGG</div><div class="hof-role">Fondateur</div><div class="hof-desc">Créateur de la Team ZEGG</div></div>
-        <div class="hof-card"><div class="hof-emoji">⚙️</div><div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div></div>
-        <div class="hof-card"><div class="hof-emoji">🛡️</div><div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div></div>
+        <div class="hof-card" style="cursor:pointer;" onclick="openProfile('vortex')"><div class="hof-emoji">👑</div><div class="hof-name">VORTEX_ZEGG</div><div class="hof-role">Fondateur</div><div class="hof-desc">Créateur de la Team ZEGG</div></div>
+        <div class="hof-card" onclick="openProfile('noxut')" style="cursor:pointer;"><div class="hof-emoji">⚙️</div><div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div></div>
+        <div class="hof-card" onclick="openProfile('khavard')" style="cursor:pointer;"><div class="hof-emoji">🛡️</div><div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div></div>
         <div class="hof-card"><div class="hof-emoji">🎯</div><div class="hof-name">—</div><div class="hof-role">Chef Recruteur</div><div class="hof-desc">Poste vacant</div></div>
         <div class="hof-card"><div class="hof-emoji">📋</div><div class="hof-name">Membres</div><div class="hof-role">Recruteur</div><div class="hof-desc">Recrutement de nouveaux joueurs</div></div>
       </div>
@@ -648,6 +668,10 @@ html.light .hof-card{background:rgba(255,255,255,.7);}
   <div class="fl2">⚡ <span>TEAM ZEGG</span> — Car Dealership Tycoon</div>
   <div class="fr">© 2026 &nbsp;|&nbsp; <a id="foot-disc" href="https://discord.gg/Pntpchsa" target="_blank">Discord</a></div>
 </footer>
+
+<div id="profile-modal" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-card" id="profile-content"></div>
+</div>
 
 <div id="music-btn" class="music-btn" onclick="toggleMusic()" title="Musique d'ambiance">🔇</div>
 <audio id="bg-music" loop preload="auto">
@@ -1354,6 +1378,42 @@ function checkGoalReached(){
   const mem=parseInt(D.cfg.members)||0,goal=parseInt(D.cfg.goal)||80;
   if(mem>=goal){setTimeout(()=>launchCelebration(),1500);}
 }
+
+// ══ PROFILE SYSTEM ══
+const PROFILES={
+  vortex:{
+    name:'VORTEX_ZEGG',
+    role:'Fondateur',
+    avatar:'https://tr.rbxcdn.com/30DAY-AvatarHeadshot-48A94F02ECFE663E53025609E0FF6658-Png/150/150/AvatarHeadshot/Png/noFilter',
+    roblox:{user:'Ailuros_Invictus',id:2424838543},
+    discord:'vortex_zegg'
+  },
+  noxut:{name:'Noxut12',role:'Admin',avatar:null,roblox:null,discord:null},
+  khavard:{name:'Khavard_zegg',role:'Chef Modérateur',avatar:null,roblox:null,discord:null}
+};
+
+function openProfile(key){
+  const p=PROFILES[key];if(!p)return;
+  const modal=document.getElementById('profile-modal');
+  const avatarUrl=p.avatar||'';
+  const avatarHtml=avatarUrl?`<img class="profile-avatar" src="${avatarUrl}" alt="${p.name}">`:`<div class="profile-avatar" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">👤</div>`;
+  let links='';
+  if(p.roblox)links+=`<a class="profile-link" href="https://www.roblox.com/users/${p.roblox.id}/profile" target="_blank"><span class="profile-link-icon">🎮</span><div><div class="profile-link-label">Roblox</div><div class="profile-link-value">${p.roblox.user}</div></div></a>`;
+  if(p.discord)links+=`<div class="profile-link"><span class="profile-link-icon">💬</span><div><div class="profile-link-label">Discord</div><div class="profile-link-value">${p.discord}</div></div></div>`;
+  if(!p.roblox&&!p.discord)links='<div style="color:var(--muted);font-size:.82rem;padding:10px;">Infos bientôt disponibles</div>';
+  document.getElementById('profile-content').innerHTML=`
+    <div class="profile-banner" style="position:relative;">
+      ${avatarHtml}
+      <button class="profile-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="profile-body">
+      <div class="profile-name">${p.name}</div>
+      <div class="profile-role">${p.role}</div>
+      <div class="profile-links">${links}</div>
+    </div>`;
+  modal.classList.add('open');
+}
+function closeProfile(){document.getElementById('profile-modal').classList.remove('open');}
 
 // ══ THEME TOGGLE ══
 function toggleTheme(){
