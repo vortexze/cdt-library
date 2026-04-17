@@ -463,7 +463,7 @@ html.light .faq-item{background:rgba(255,255,255,.7);}
 .hof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:24px;}
 .hof-card{background:rgba(6,10,24,.7);border:1px solid var(--border);border-radius:var(--r);padding:24px 18px;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
 .hof-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--accent));opacity:.6;}
-.hof-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 8px 32px rgba(255,183,0,.1);cursor:pointer !important;}
+.hof-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 8px 32px rgba(255,183,0,.1);}
 .hof-emoji{font-size:2.5rem;margin-bottom:8px;}
 .hof-name{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:6px;}
 .hof-role{font-size:.72rem;color:var(--gold);font-weight:600;letter-spacing:1px;margin-bottom:4px;}
@@ -570,7 +570,10 @@ html.light .hof-card{background:rgba(255,255,255,.7);}
 .hof-featured{position:relative;background:linear-gradient(135deg,rgba(8,14,32,.92),rgba(255,183,0,.08));border:1px solid rgba(255,183,0,.35);border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer !important;transition:all .3s;overflow:hidden;margin-bottom:16px;}
 .hof-featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--accent),var(--gold));background-size:200% auto;animation:shimmer 3s linear infinite;}
 .hof-featured::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,183,0,.06),transparent 60%);pointer-events:none;}
-.hof-featured:hover{border-color:rgba(255,183,0,.6);box-shadow:0 0 50px rgba(255,183,0,.12),0 8px 40px rgba(255,183,0,.08);transform:translateY(-4px);}
+.hof-featured:hover{border-color:rgba(255,183,0,.4);box-shadow:0 0 30px rgba(255,183,0,.08);}
+.hof-roblox-btn{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:9px 18px;background:rgba(0,229,201,.07);border:1px solid rgba(0,229,201,.25);border-radius:6px;text-decoration:none;color:var(--accent);font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:1.5px;transition:all .22s;cursor:pointer !important;}
+.hof-roblox-btn:hover{background:rgba(0,229,201,.15);border-color:var(--accent);box-shadow:0 0 14px rgba(0,229,201,.15);transform:translateY(-1px);}
+.hof-featured .hof-roblox-btn{font-size:.72rem;padding:10px 22px;}
 .hof-featured-avatar{width:88px;height:88px;border-radius:50%;border:3px solid rgba(255,183,0,.55);object-fit:cover;margin-bottom:12px;box-shadow:0 0 28px rgba(255,183,0,.25);transition:box-shadow .3s;}
 .hof-featured:hover .hof-featured-avatar{box-shadow:0 0 40px rgba(255,183,0,.4);}
 .hof-featured-crown{font-size:1.5rem;position:absolute;top:18px;right:22px;}
@@ -856,27 +859,31 @@ html.light .insc-stats-row{background:rgba(0,0,0,.06);}
       </div>
 
       <!-- FONDATEUR (featured) -->
-      <div class="hof-featured" onclick="openProfile('vortex')">
+      <div class="hof-featured">
         <div class="hof-featured-crown">👑</div>
         <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-773264DE0FE170059CE0F1FA8461922B-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-featured-avatar" alt="VORTEX_ZEGG">
         <div class="hof-featured-name">VORTEX_ZEGG</div>
         <div class="hof-featured-role">Fondateur</div>
         <div class="hof-featured-desc">Créateur et leader de la Team ZEGG</div>
+        <a class="hof-roblox-btn" href="https://www.roblox.com/users/2424838543/profile" target="_blank">🎮 Voir le profil Roblox</a>
       </div>
 
       <!-- RESTE DE LA HIÉRARCHIE -->
       <div class="hof-grid" id="hof-grid">
-        <div class="hof-card" data-role="admin" onclick="openProfile('noxut')" style="cursor:pointer;">
+        <div class="hof-card" data-role="admin">
           <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-1820F58791F62F8F381A034B46223061-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Noxut12">
           <div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div>
+          <a class="hof-roblox-btn" href="https://www.roblox.com/users/7525661369/profile" target="_blank">🎮 Voir le profil</a>
         </div>
-        <div class="hof-card" data-role="chef-modo" onclick="openProfile('khavard')" style="cursor:pointer;">
+        <div class="hof-card" data-role="chef-modo">
           <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-C6EAA076BBE36FC2542C5372568D6082-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Khavard_zegg">
           <div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div>
+          <a class="hof-roblox-btn" href="https://www.roblox.com/users/2728563284/profile" target="_blank">🎮 Voir le profil</a>
         </div>
-        <div class="hof-card" data-role="modo" onclick="openProfile('foxy')" style="cursor:pointer;">
+        <div class="hof-card" data-role="modo">
           <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-D20A49F6FD85D4FFC3DDF47ABED3D6B0-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Foxy_zegg">
           <div class="hof-name">Foxy_zegg</div><div class="hof-role">Modérateur</div><div class="hof-desc">Maintien de l'ordre et du respect</div>
+          <a class="hof-roblox-btn" href="https://www.roblox.com/users/5124549991/profile" target="_blank">🎮 Voir le profil</a>
         </div>
         <div class="hof-card" data-role="vacant"><div class="hof-emoji">🎯</div><div class="hof-name">—</div><div class="hof-role">Chef Recruteur</div><div class="hof-desc">Poste vacant</div></div>
         <div class="hof-card"><div class="hof-emoji">📋</div><div class="hof-name">Membres</div><div class="hof-role">Recruteur</div><div class="hof-desc">Recrutement de nouveaux joueurs</div></div>
