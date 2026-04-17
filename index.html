@@ -532,6 +532,73 @@ html.light .hof-card{background:rgba(255,255,255,.7);}
   .lc-n{font-size:1.15rem;}
 }
 
+/* ===== LA TEAM PAGE ===== */
+.team-hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:28px;min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;padding:52px 40px;}
+.team-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,183,0,.1),rgba(0,229,201,.08) 50%,rgba(88,101,242,.1));z-index:0;}
+.team-hero-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 25% 50%,rgba(255,183,0,.18),transparent 55%),radial-gradient(ellipse at 75% 40%,rgba(0,229,201,.14),transparent 55%);animation:aurora 18s ease-in-out infinite;}
+.team-hero-bg::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,183,0,.18);border-radius:16px;pointer-events:none;}
+.team-hero-content{position:relative;z-index:1;}
+.team-hero-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;opacity:.85;}
+.team-hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(2.2rem,6vw,4rem);font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,var(--gold) 0%,#fff 50%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+.team-hero-sub{font-size:.88rem;color:var(--muted2);letter-spacing:4px;margin-bottom:30px;}
+.team-hero-stats{display:flex;align-items:center;justify-content:center;gap:0;background:rgba(0,0,0,.3);border:1px solid rgba(255,183,0,.25);border-radius:8px;overflow:hidden;width:fit-content;margin:0 auto;}
+.ths{padding:14px 28px;text-align:center;}
+.ths-n{display:block;font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gold);filter:drop-shadow(0 0 8px var(--gold-glow));}
+.ths-l{display:block;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:3px;}
+.ths-sep{width:1px;height:46px;background:rgba(255,183,0,.2);flex-shrink:0;}
+/* Identity cards */
+.about-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.about-card{display:flex;gap:20px;background:rgba(8,14,32,.7);border:1px solid var(--border);border-radius:12px;padding:28px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s;}
+.about-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+.about-card:hover{border-color:rgba(0,229,201,.25);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,229,201,.06);}
+.about-card:hover::before{transform:scaleX(1);}
+.about-card-icon{font-size:2.2rem;flex-shrink:0;line-height:1;margin-top:2px;filter:drop-shadow(0 0 8px rgba(0,229,201,.3));}
+.about-card-title{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:800;letter-spacing:2px;color:var(--accent);margin-bottom:10px;}
+.about-card-text{font-size:.87rem;color:var(--muted2);line-height:1.85;}
+/* Values */
+.team-values{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+.tv{display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,201,.05);border:1px solid var(--border);border-radius:100px;padding:8px 18px;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:2px;color:var(--muted2);transition:all .25s;}
+.tv:hover{border-color:rgba(0,229,201,.3);color:var(--accent);background:rgba(0,229,201,.08);transform:translateY(-2px);}
+.tv span{font-size:1rem;}
+/* HOF section wrapper */
+.team-hof-section{margin-bottom:22px;}
+.team-hof-header{text-align:center;margin-bottom:24px;}
+.team-hof-title{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.team-hof-sub{font-size:.72rem;color:var(--muted);letter-spacing:2px;}
+/* HOF featured card (Fondateur) */
+.hof-featured{position:relative;background:linear-gradient(135deg,rgba(8,14,32,.92),rgba(255,183,0,.08));border:1px solid rgba(255,183,0,.35);border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer !important;transition:all .3s;overflow:hidden;margin-bottom:16px;}
+.hof-featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--accent),var(--gold));background-size:200% auto;animation:shimmer 3s linear infinite;}
+.hof-featured::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,183,0,.06),transparent 60%);pointer-events:none;}
+.hof-featured:hover{border-color:rgba(255,183,0,.6);box-shadow:0 0 50px rgba(255,183,0,.12),0 8px 40px rgba(255,183,0,.08);transform:translateY(-4px);}
+.hof-featured-avatar{width:88px;height:88px;border-radius:50%;border:3px solid rgba(255,183,0,.55);object-fit:cover;margin-bottom:12px;box-shadow:0 0 28px rgba(255,183,0,.25);transition:box-shadow .3s;}
+.hof-featured:hover .hof-featured-avatar{box-shadow:0 0 40px rgba(255,183,0,.4);}
+.hof-featured-crown{font-size:1.5rem;position:absolute;top:18px;right:22px;}
+.hof-featured-name{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:900;letter-spacing:3px;color:var(--gold);margin-bottom:5px;}
+.hof-featured-role{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.hof-featured-desc{font-size:.8rem;color:var(--muted2);}
+/* Avatar images inside regular hof-cards */
+.hof-avatar{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);margin-bottom:8px;transition:border-color .3s,box-shadow .3s;}
+.hof-card:hover .hof-avatar{border-color:var(--accent);box-shadow:0 0 16px rgba(0,229,201,.25);}
+.hof-card[data-role="admin"] .hof-avatar{border-color:rgba(0,229,201,.4);}
+.hof-card[data-role="chef-modo"] .hof-avatar{border-color:rgba(88,101,242,.4);}
+.hof-card[data-role="modo"] .hof-avatar{border-color:rgba(88,101,242,.25);}
+/* Light mode */
+html.light .about-card{background:rgba(255,255,255,.85);}
+html.light .team-hero-stats{background:rgba(0,0,0,.06);}
+html.light .hof-featured{background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,183,0,.06));}
+html.light .tv{background:rgba(0,150,136,.04);}
+@media(max-width:640px){
+  .team-hero{padding:32px 20px;min-height:220px;}
+  .team-hero-title{font-size:1.9rem;letter-spacing:3px;}
+  .team-hero-stats{flex-wrap:wrap;width:100%;}
+  .ths{flex:1;padding:10px 14px;}
+  .ths-sep{display:none;}
+  .about-cards{grid-template-columns:1fr;}
+  .about-card{flex-direction:row;gap:14px;}
+  .team-values{justify-content:center;}
+  .hof-featured-avatar{width:72px;height:72px;}
+}
+
 /* ===== INSCRIPTION PAGE ===== */
 .insc-hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:28px;min-height:300px;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 40px;}
 .insc-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,201,.12) 0%,rgba(88,101,242,.1) 40%,rgba(255,183,0,.1) 100%);z-index:0;}
@@ -730,23 +797,86 @@ html.light .insc-stats-row{background:rgba(0,0,0,.06);}
 <!-- ABOUT -->
 <div id="page-about" class="section">
   <div class="container">
-    <span class="sec-tag reveal">À propos</span>
-    <div class="sec-div reveal"></div>
-    <h2 class="sec-title reveal" id="about-title">QUI SOMMES-NOUS</h2>
-    <p class="sec-sub reveal" id="about-sub">La Team ZEGG sur Car Dealership Tycoon</p>
-    <div class="about-grid">
-      <div class="gc reveal reveal-d1"><h3 id="c1t">🚗 Notre Team</h3><p id="c1p">La Team ZEGG est une communauté sérieuse et active sur Car Dealership Tycoon (Roblox). Nous rassemblons des joueurs passionnés qui cherchent à progresser ensemble, s'entraider et dominer le jeu.</p></div>
-      <div class="gc reveal reveal-d2"><h3 id="c2t">⚔️ Notre Ambition</h3><p id="c2p">Nous visons à devenir la référence absolue sur CDT. Chaque membre est important et contribue à la croissance de la team. Ensemble, on vise les sommets.</p></div>
+
+    <!-- HERO LA TEAM -->
+    <div class="team-hero reveal">
+      <div class="team-hero-bg"></div>
+      <div class="team-hero-content">
+        <div class="team-hero-tag">🏎️ Car Dealership Tycoon — Roblox</div>
+        <h2 class="team-hero-title">LA TEAM ZEGG</h2>
+        <p class="team-hero-sub">Sérieux · Actif · Ambitieux</p>
+        <div class="team-hero-stats">
+          <div class="ths"><span class="ths-n">33</span><span class="ths-l">Membres</span></div>
+          <div class="ths-sep"></div>
+          <div class="ths"><span class="ths-n">2+</span><span class="ths-l">Ans</span></div>
+          <div class="ths-sep"></div>
+          <div class="ths"><span class="ths-n">Top</span><span class="ths-l">CDT</span></div>
+        </div>
+      </div>
     </div>
+
+    <!-- IDENTITÉ -->
+    <div class="about-cards reveal">
+      <div class="about-card reveal-d1">
+        <div class="about-card-icon">🚗</div>
+        <div>
+          <div class="about-card-title" id="c1t">Notre Team</div>
+          <p class="about-card-text" id="c1p">La Team ZEGG est une communauté sérieuse et active sur Car Dealership Tycoon (Roblox). Nous rassemblons des joueurs passionnés qui cherchent à progresser ensemble, s'entraider et dominer le jeu.</p>
+        </div>
+      </div>
+      <div class="about-card reveal-d2">
+        <div class="about-card-icon">⚔️</div>
+        <div>
+          <div class="about-card-title" id="c2t">Notre Ambition</div>
+          <p class="about-card-text" id="c2p">Nous visons à devenir la référence absolue sur CDT. Chaque membre est important et contribue à la croissance de la team. Ensemble, on vise les sommets.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALEURS -->
+    <div class="team-values reveal">
+      <div class="tv"><span>💪</span>Sérieux</div>
+      <div class="tv"><span>🤝</span>Entraide</div>
+      <div class="tv"><span>📈</span>Progression</div>
+      <div class="tv"><span>🛡️</span>Respect</div>
+      <div class="tv"><span>🔥</span>Compétitif</div>
+      <div class="tv"><span>🎯</span>Objectifs</div>
+    </div>
+
+    <!-- OBJECTIFS -->
     <div class="obj-sec reveal"><h3 id="obj-title">🎯 OBJECTIFS 2026</h3><div class="obj-grid" id="obj-list"></div></div>
-    <!-- HALL OF FAME -->
-    <div class="obj-sec reveal" style="margin-top:22px;">
-      <h3>🎖️ HIÉRARCHIE 🎖️</h3>
+
+    <!-- HIÉRARCHIE -->
+    <div class="team-hof-section reveal">
+      <div class="team-hof-header">
+        <span class="sec-tag">Structure</span>
+        <h3 class="team-hof-title">🎖️ HIÉRARCHIE 🎖️</h3>
+        <p class="team-hof-sub">Clique sur un membre pour voir son profil complet</p>
+      </div>
+
+      <!-- FONDATEUR (featured) -->
+      <div class="hof-featured" onclick="openProfile('vortex')">
+        <div class="hof-featured-crown">👑</div>
+        <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-773264DE0FE170059CE0F1FA8461922B-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-featured-avatar" alt="VORTEX_ZEGG">
+        <div class="hof-featured-name">VORTEX_ZEGG</div>
+        <div class="hof-featured-role">Fondateur</div>
+        <div class="hof-featured-desc">Créateur et leader de la Team ZEGG</div>
+      </div>
+
+      <!-- RESTE DE LA HIÉRARCHIE -->
       <div class="hof-grid" id="hof-grid">
-        <div class="hof-card" data-role="fondateur" style="cursor:pointer;" onclick="openProfile('vortex')"><div class="hof-emoji">👑</div><div class="hof-name">VORTEX_ZEGG</div><div class="hof-role">Fondateur</div><div class="hof-desc">Créateur de la Team ZEGG</div></div>
-        <div class="hof-card" data-role="admin" onclick="openProfile('noxut')" style="cursor:pointer;"><div class="hof-emoji">⚙️</div><div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div></div>
-        <div class="hof-card" data-role="chef-modo" onclick="openProfile('khavard')" style="cursor:pointer;"><div class="hof-emoji">🛡️</div><div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div></div>
-        <div class="hof-card" data-role="modo" onclick="openProfile('foxy')" style="cursor:pointer;"><div class="hof-emoji">🔰</div><div class="hof-name">Foxy_zegg</div><div class="hof-role">Modérateur</div><div class="hof-desc">Maintien de l'ordre et du respect</div></div>
+        <div class="hof-card" data-role="admin" onclick="openProfile('noxut')" style="cursor:pointer;">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-1820F58791F62F8F381A034B46223061-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Noxut12">
+          <div class="hof-emoji">⚙️</div><div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div>
+        </div>
+        <div class="hof-card" data-role="chef-modo" onclick="openProfile('khavard')" style="cursor:pointer;">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-C6EAA076BBE36FC2542C5372568D6082-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Khavard_zegg">
+          <div class="hof-emoji">🛡️</div><div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div>
+        </div>
+        <div class="hof-card" data-role="modo" onclick="openProfile('foxy')" style="cursor:pointer;">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-D20A49F6FD85D4FFC3DDF47ABED3D6B0-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Foxy_zegg">
+          <div class="hof-emoji">🔰</div><div class="hof-name">Foxy_zegg</div><div class="hof-role">Modérateur</div><div class="hof-desc">Maintien de l'ordre et du respect</div>
+        </div>
         <div class="hof-card" data-role="vacant"><div class="hof-emoji">🎯</div><div class="hof-name">—</div><div class="hof-role">Chef Recruteur</div><div class="hof-desc">Poste vacant</div></div>
         <div class="hof-card"><div class="hof-emoji">📋</div><div class="hof-name">Membres</div><div class="hof-role">Recruteur</div><div class="hof-desc">Recrutement de nouveaux joueurs</div></div>
       </div>
