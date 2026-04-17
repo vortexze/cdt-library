@@ -339,10 +339,11 @@ nav{display:flex;gap:2px;}
 .profile-role{font-size:.75rem;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
 .profile-discord{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted2);letter-spacing:1px;}
 .profile-discord-dot{width:8px;height:8px;border-radius:50%;background:#5865F2;flex-shrink:0;}
-.profile-roblox-link{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-decoration:none;color:var(--accent);font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:2px;transition:color .2s,gap .2s;}
-.profile-roblox-link:hover{color:#fff;gap:12px;}
-.profile-roblox-link span{font-size:.85rem;transition:transform .2s;}
-.profile-roblox-link:hover span{transform:translateX(3px) translateY(-2px);}
+.profile-roblox-link{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:18px;padding:13px 20px;background:linear-gradient(135deg,rgba(0,229,201,.12),rgba(0,229,201,.06));border:1px solid rgba(0,229,201,.3);border-radius:8px;text-decoration:none;color:var(--accent);font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:2px;font-weight:600;transition:all .25s;position:relative;overflow:hidden;}
+.profile-roblox-link::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(0,229,201,.12) 50%,transparent 70%);transform:translateX(-100%);transition:transform .5s;}
+.profile-roblox-link:hover{background:linear-gradient(135deg,rgba(0,229,201,.2),rgba(0,229,201,.1));border-color:var(--accent);box-shadow:0 0 20px rgba(0,229,201,.15);transform:translateY(-1px);}
+.profile-roblox-link:hover::before{transform:translateX(100%);}
+.profile-roblox-link span{font-size:.9rem;}
 .profile-close{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:1.1rem;width:32px;height:32px;border-radius:50%;cursor:pointer !important;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:10;}
 .profile-close:hover{background:rgba(255,45,85,.4);}
 html.light .profile-card{background:rgba(240,242,245,.97);}
@@ -867,15 +868,15 @@ html.light .insc-stats-row{background:rgba(0,0,0,.06);}
       <div class="hof-grid" id="hof-grid">
         <div class="hof-card" data-role="admin" onclick="openProfile('noxut')" style="cursor:pointer;">
           <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-1820F58791F62F8F381A034B46223061-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Noxut12">
-          <div class="hof-emoji">⚙️</div><div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div>
+          <div class="hof-name">Noxut12</div><div class="hof-role">Admin</div><div class="hof-desc">Gestion et administration de la team</div>
         </div>
         <div class="hof-card" data-role="chef-modo" onclick="openProfile('khavard')" style="cursor:pointer;">
           <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-C6EAA076BBE36FC2542C5372568D6082-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Khavard_zegg">
-          <div class="hof-emoji">🛡️</div><div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div>
+          <div class="hof-name">Khavard_zegg</div><div class="hof-role">Chef Modérateur</div><div class="hof-desc">Responsable de la modération</div>
         </div>
         <div class="hof-card" data-role="modo" onclick="openProfile('foxy')" style="cursor:pointer;">
           <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-D20A49F6FD85D4FFC3DDF47ABED3D6B0-Png/150/150/AvatarHeadshot/Png/noFilter" class="hof-avatar" alt="Foxy_zegg">
-          <div class="hof-emoji">🔰</div><div class="hof-name">Foxy_zegg</div><div class="hof-role">Modérateur</div><div class="hof-desc">Maintien de l'ordre et du respect</div>
+          <div class="hof-name">Foxy_zegg</div><div class="hof-role">Modérateur</div><div class="hof-desc">Maintien de l'ordre et du respect</div>
         </div>
         <div class="hof-card" data-role="vacant"><div class="hof-emoji">🎯</div><div class="hof-name">—</div><div class="hof-role">Chef Recruteur</div><div class="hof-desc">Poste vacant</div></div>
         <div class="hof-card"><div class="hof-emoji">📋</div><div class="hof-name">Membres</div><div class="hof-role">Recruteur</div><div class="hof-desc">Recrutement de nouveaux joueurs</div></div>
@@ -1764,7 +1765,7 @@ function openProfile(key){
   const avatarUrl=p.avatar||'';
   const avatarHtml=avatarUrl?`<img class="profile-avatar" src="${avatarUrl}" alt="${p.name}">`:`<div class="profile-avatar" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">👤</div>`;
   const discordHtml=p.discord?`<div class="profile-discord"><div class="profile-discord-dot"></div>${p.discord}</div>`:'';
-  const robloxHtml=p.roblox?`<a class="profile-roblox-link" href="https://www.roblox.com/users/${p.roblox.id}/profile" target="_blank">🎮 ${p.roblox.user}<span>↗</span></a>`:'';
+  const robloxHtml=p.roblox?`<a class="profile-roblox-link" href="https://www.roblox.com/users/${p.roblox.id}/profile" target="_blank"><span>🎮</span> Voir le profil Roblox</a>`:'';
   document.getElementById('profile-content').innerHTML=`
     <div class="profile-banner" style="position:relative;">
       ${avatarHtml}
