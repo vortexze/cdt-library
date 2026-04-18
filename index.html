@@ -317,6 +317,13 @@ nav{display:flex;gap:3px;background:rgba(255,255,255,.04);border:1px solid var(-
 .ev-badge-event{background:rgba(0,229,201,.12);border:1px solid rgba(0,229,201,.4);color:var(--accent);}
 .ev-featured-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,4.5vw,3rem);font-weight:900;letter-spacing:3px;color:#fff;line-height:1.1;margin-bottom:14px;text-shadow:0 2px 30px rgba(0,0,0,.6);overflow-wrap:break-word;word-wrap:break-word;}
 .ev-featured-date{font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:3px;color:var(--gold);margin-bottom:18px;}
+.ev-countdown{margin:6px 0 26px;padding:22px 24px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:14px;backdrop-filter:blur(10px);max-width:640px;}
+.ev-cd-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:700;}
+.ev-cd-blocks{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;}
+.ev-cd-block{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:10px 12px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:10px;}
+.ev-cd-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;line-height:1;color:#fff;letter-spacing:1px;text-shadow:0 0 18px rgba(255,183,0,.35);}
+.ev-cd-unit{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:6px;}
+.ev-cd-sep{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold);padding-bottom:18px;opacity:.6;}
 .ev-featured-desc{font-size:.95rem;color:rgba(255,255,255,.72);line-height:1.85;margin-bottom:24px;max-width:720px;}
 .ev-server-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:10px;text-decoration:none;color:#fff;font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:1.5px;font-weight:600;transition:all .25s;backdrop-filter:blur(10px);cursor:pointer !important;}
 .ev-server-btn:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.4);}
@@ -335,6 +342,11 @@ nav{display:flex;gap:3px;background:rgba(255,255,255,.04);border:1px solid var(-
   .ev-featured-emoji{font-size:2.4rem;}
   .ev-featured-desc{font-size:.85rem;}
   .ev-server-btn{padding:12px 22px;font-size:.7rem;width:100%;justify-content:center;}
+  .ev-countdown{padding:16px 14px;}
+  .ev-cd-block{min-width:54px;padding:8px 6px;}
+  .ev-cd-num{font-size:1.4rem;}
+  .ev-cd-sep{font-size:1.1rem;padding-bottom:14px;}
+  .ev-cd-blocks{gap:6px;}
 }
 .ev-badge{display:inline-flex;align-items:center;gap:5px;font-size:.58rem;letter-spacing:2px;padding:3px 10px;margin-top:12px;text-transform:uppercase;font-weight:700;border-radius:2px;}
 .ev-badge.competition{background:rgba(255,45,85,.1);border:1px solid rgba(255,45,85,.3);color:var(--red);}
@@ -1306,7 +1318,7 @@ const DEF={
     {name:'bella_zegg',value:'30000',emoji:'⬜'},{name:'FOXY_ZEGG',value:'21300',emoji:'⬜'},
   ],
   events:[
-    {title:'Event Hebdomadaire CDT',date:'2026-04-18',type:'event',emoji:'🚨',desc:'Un événement aura lieu ce samedi à 16h sur le serveur privé dans Car Dealership Tycoon ! Il aura lieu tous les samedis à 16h pour suivre les mises à jour du jeu. Soyez présents pour découvrir tout ça ensemble 🔥',serverLink:'https://www.roblox.com/share?code=33d1459cfdf2494ba2f04bc629a27950&type=Server'}
+    {title:'Event Hebdomadaire CDT',date:'2026-04-18',hour:'16:00',recurring:'weekly',type:'event',emoji:'🚨',desc:'Un événement aura lieu ce samedi à 16h sur le serveur privé dans Car Dealership Tycoon ! Il aura lieu tous les samedis à 16h pour suivre les mises à jour du jeu. Soyez présents pour découvrir tout ça ensemble 🔥',serverLink:'https://www.roblox.com/share?code=33d1459cfdf2494ba2f04bc629a27950&type=Server'}
   ],
   objectives:[
     {emoji:'🚀',text:'Développer une communauté active et sérieuse'},
@@ -1337,7 +1349,7 @@ let D={};
 function load(){try{const s=localStorage.getItem('zegg_v5');D=s?JSON.parse(s):JSON.parse(JSON.stringify(DEF));}catch(e){D=JSON.parse(JSON.stringify(DEF));}Object.keys(DEF).forEach(k=>{if(D[k]===undefined)D[k]=JSON.parse(JSON.stringify(DEF[k]));});if(!D.cfg)D.cfg=JSON.parse(JSON.stringify(DEF.cfg));if(!D.cfg.colors)D.cfg.colors=JSON.parse(JSON.stringify(DEF.cfg.colors));
 // Clean stale events with Discord markdown and merge default events
 D.events=(D.events||[]).filter(e=>e.title&&!e.title.includes('mise à jour'));
-DEF.events.forEach(de=>{if(!D.events.find(e=>e.title===de.title&&e.date===de.date))D.events.push(de);});}
+DEF.events.forEach(de=>{const ex=D.events.find(e=>e.title===de.title);if(!ex){D.events.push(de);}else{Object.assign(ex,de);}});}
 function save(){localStorage.setItem('zegg_v5',JSON.stringify(D));}
 
 // ══ NAV ══
@@ -1390,11 +1402,13 @@ function renderEvents(){
   const typeKey=main.type||'event';
   const typeLabel={competition:'🏁 Compétition',annonce:'📢 Annonce',event:'⚡ Événement'}[typeKey]||'📅 Événement';
   const serverBtn=main.serverLink?`<a href="${main.serverLink}" target="_blank" class="ev-server-btn" style="cursor:pointer!important;">🎮 Rejoindre le serveur privé Roblox <span>↗</span></a>`:'';
-  let html=`<div class="ev-featured ev-bg-${typeKey}"><div class="ev-featured-bg"></div><div class="ev-featured-grid"></div><div class="ev-featured-content"><div class="ev-featured-top"><div class="ev-featured-emoji">${main.emoji||'📅'}</div><div class="ev-featured-badge ev-badge-${typeKey}">${typeLabel}</div></div><div class="ev-featured-title">${main.title}</div><div class="ev-featured-date">📆 ${fmtDate(main.date)}</div>${main.desc?`<div class="ev-featured-desc">${main.desc}</div>`:''}${serverBtn}</div></div>`;
+  const countdown=`<div class="ev-countdown" data-date="${main.date}" data-hour="${main.hour||'00:00'}" data-recurring="${main.recurring||''}"><div class="ev-cd-label">⏳ Début dans</div><div class="ev-cd-blocks"><div class="ev-cd-block"><div class="ev-cd-num" data-u="d">--</div><div class="ev-cd-unit">jours</div></div><div class="ev-cd-sep">:</div><div class="ev-cd-block"><div class="ev-cd-num" data-u="h">--</div><div class="ev-cd-unit">heures</div></div><div class="ev-cd-sep">:</div><div class="ev-cd-block"><div class="ev-cd-num" data-u="m">--</div><div class="ev-cd-unit">min</div></div><div class="ev-cd-sep">:</div><div class="ev-cd-block"><div class="ev-cd-num" data-u="s">--</div><div class="ev-cd-unit">sec</div></div></div></div>`;
+  let html=`<div class="ev-featured ev-bg-${typeKey}"><div class="ev-featured-bg"></div><div class="ev-featured-grid"></div><div class="ev-featured-content"><div class="ev-featured-top"><div class="ev-featured-emoji">${main.emoji||'📅'}</div><div class="ev-featured-badge ev-badge-${typeKey}">${typeLabel}</div></div><div class="ev-featured-title">${main.title}</div><div class="ev-featured-date">📆 ${fmtDate(main.date)} ${main.hour?'à '+main.hour:''}</div>${countdown}${main.desc?`<div class="ev-featured-desc">${main.desc}</div>`:''}${serverBtn}</div></div>`;
   if(rest.length){
     html+=`<div class="ev-more-label">Autres événements</div><div class="ev-grid">${rest.map(ev=>`<div class="ev-card"><div class="ev-date">${fmtDate(ev.date)}</div><div class="ev-title">${ev.emoji||'📅'} ${ev.title}</div><div class="ev-desc">${ev.desc||''}</div></div>`).join('')}</div>`;
   }
   el.innerHTML=html;
+  if(typeof tickCountdowns==='function')tickCountdowns();
 }
 function renderHomeBanner(){
   const b=document.getElementById('home-event-banner');if(!b)return;
@@ -1439,6 +1453,20 @@ function renderHomeAnn(){
 }
 function animN(id,target){const el=document.getElementById(id);if(!el)return;let c=0;const step=Math.max(1,Math.floor(target/40));const iv=setInterval(()=>{c=Math.min(c+step,target);el.textContent=c;if(c>=target){el.textContent=target;clearInterval(iv);}},35);}
 function renderAll(){renderTexts();renderObj();renderLB('money','money-list');renderLB('miles','miles-list');renderEvents();renderHomeAnn();renderHomeBanner();}
+function tickCountdowns(){
+  document.querySelectorAll('.ev-countdown').forEach(c=>{
+    const date=c.dataset.date,hour=c.dataset.hour||'00:00',rec=c.dataset.recurring;
+    let target=new Date(date+'T'+hour+':00');
+    if(rec==='weekly'){while(target.getTime()<Date.now()-2*3600*1000)target=new Date(target.getTime()+7*86400*1000);}
+    let diff=target.getTime()-Date.now();
+    if(diff<=0&&diff>-2*3600*1000){c.querySelector('.ev-cd-label').textContent='🔴 EN COURS';c.querySelectorAll('.ev-cd-num').forEach(n=>n.textContent='00');return;}
+    if(diff<=0){c.style.display='none';return;}
+    const d=Math.floor(diff/86400000),h=Math.floor(diff/3600000)%24,m=Math.floor(diff/60000)%60,s=Math.floor(diff/1000)%60;
+    const map={d,h,m,s};
+    c.querySelectorAll('.ev-cd-num').forEach(n=>{n.textContent=String(map[n.dataset.u]).padStart(2,'0');});
+  });
+}
+setInterval(tickCountdowns,1000);
 
 // ══ LIVE COUNTER ══
 function startCounter(){
