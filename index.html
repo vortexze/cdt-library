@@ -1196,7 +1196,9 @@ html.light .insc-stats-row{background:rgba(0,0,0,.06);}
             <div class="fg"><label class="fl">Titre *</label><input class="fi" id="ev-title" placeholder="Ex: Tournoi Money" type="text"></div>
             <div class="fg"><label class="fl">Date</label><input class="fi" id="ev-date" type="date"></div>
           </div>
-          <div class="fg"><label class="fl">Description</label><textarea class="ft" id="ev-desc" placeholder="Décris l'événement..."></textarea></div>
+          <div class="fg"><label class="fl">Description (FR)</label><textarea class="ft" id="ev-desc" placeholder="Décris l'événement..."></textarea></div>
+          <div class="fg"><label class="fl">Title (EN — optional)</label><input class="fi" id="ev-title-en" type="text" placeholder="English title"></div>
+          <div class="fg"><label class="fl">Description (EN — optional)</label><textarea class="ft" id="ev-desc-en" placeholder="English version (sent to #announcements EN)"></textarea></div>
           <div class="adm-g2">
             <div class="fg"><label class="fl">Heure (optionnelle)</label><input class="fi" id="ev-hour" type="time"></div>
             <div class="fg"><label class="fl">Lien serveur Roblox (optionnel)</label><input class="fi" id="ev-server" type="url" placeholder="https://www.roblox.com/share?..."></div>
@@ -1218,7 +1220,8 @@ html.light .insc-stats-row{background:rgba(0,0,0,.06);}
         <div class="adm-card"><div class="adm-card-t">🔗 Liens Discord</div>
           <div class="fg"><label class="fl">Lien Discord</label><input class="fi" id="c-disclink" type="url"></div>
           <div class="fg"><label class="fl">URL Webhook (candidatures)</label><input class="fi" id="c-webhook" type="url"></div>
-          <div class="fg"><label class="fl">URL Webhook #annonces (events)</label><input class="fi" id="c-webhook-ann" type="url" placeholder="https://discord.com/api/webhooks/..."></div>
+          <div class="fg"><label class="fl">URL Webhook #annonces FR</label><input class="fi" id="c-webhook-ann" type="url" placeholder="https://discord.com/api/webhooks/..."></div>
+          <div class="fg"><label class="fl">URL Webhook #announcements EN</label><input class="fi" id="c-webhook-ann-en" type="url" placeholder="https://discord.com/api/webhooks/..."></div>
         </div>
         <div class="adm-card"><div class="adm-card-t">⏱ Date de création</div>
           <div class="fg"><label class="fl">Date de naissance de la team</label><input class="fi" id="c-birth" type="date"></div>
@@ -1638,7 +1641,7 @@ function loadForms(){
   sv('c-c1t',c.c1t);sv('c-c1p',c.c1p);sv('c-c2t',c.c2t);sv('c-c2p',c.c2p);
   sv('c-objtitle',c.objTitle);sv('c-ctatext',c.ctaText);
   sv('c-insctitle',c.inscTitle);sv('c-inscsub',c.inscSub);
-  sv('c-disclink',c.discordLink);sv('c-webhook',c.webhook);sv('c-webhook-ann',c.webhookAnnonce);sv('c-birth',c.birthDate||'2024-11-01');
+  sv('c-disclink',c.discordLink);sv('c-webhook',c.webhook);sv('c-webhook-ann',c.webhookAnnonce);sv('c-webhook-ann-en',c.webhookAnnonceEn);sv('c-birth',c.birthDate||'2024-11-01');
   const rc=document.getElementById('c-recruit');if(rc)rc.value=c.recruitOpen!==false?'true':'false';
   const col=c.colors||{};
   sv('clr-accent',col.accent||'#00e5c9');sv('clr-gold',col.gold||'#ffb700');sv('clr-red',col.red||'#ff2d55');sv('clr-bg',col.bg||'#03050f');sv('clr-bg1',col.bg1||'#060a18');
@@ -1654,7 +1657,7 @@ function saveAll(){
   c.c1t=gv('c-c1t')||c.c1t;c.c1p=gv('c-c1p')||c.c1p;c.c2t=gv('c-c2t')||c.c2t;c.c2p=gv('c-c2p')||c.c2p;
   c.objTitle=gv('c-objtitle')||c.objTitle;c.ctaText=gv('c-ctatext')||c.ctaText;
   c.inscTitle=gv('c-insctitle')||c.inscTitle;c.inscSub=gv('c-inscsub')||c.inscSub;
-  c.discordLink=gv('c-disclink')||c.discordLink;c.webhook=gv('c-webhook')||c.webhook;c.webhookAnnonce=gv('c-webhook-ann')||c.webhookAnnonce;c.birthDate=gv('c-birth')||c.birthDate;
+  c.discordLink=gv('c-disclink')||c.discordLink;c.webhook=gv('c-webhook')||c.webhook;c.webhookAnnonce=gv('c-webhook-ann')||c.webhookAnnonce;c.webhookAnnonceEn=gv('c-webhook-ann-en')||c.webhookAnnonceEn;c.birthDate=gv('c-birth')||c.birthDate;
   c.recruitOpen=gv('c-recruit')==='true';
   saveLBDOM('money');saveLBDOM('miles');syncObj();
   save();renderAll();updDash();updateRecruitStatus();startEventCountdown();showToast('✅ Tout sauvegardé !');
@@ -1678,27 +1681,36 @@ function delLB(type,i){const s=[...D[type]].sort((a,b)=>pv(b.value)-pv(a.value))
 // EVENTS ADMIN
 function addEvent(){
   const title=document.getElementById('ev-title').value.trim();if(!title){showToast('❌ Titre obligatoire',true);return;}
-  const ev={id:Date.now(),title,date:document.getElementById('ev-date').value,hour:document.getElementById('ev-hour').value,desc:document.getElementById('ev-desc').value.trim(),type:document.getElementById('ev-type').value,emoji:document.getElementById('ev-emoji').value.trim()||'📅',serverLink:document.getElementById('ev-server').value.trim()};
+  const ev={id:Date.now(),title,titleEn:document.getElementById('ev-title-en').value.trim(),date:document.getElementById('ev-date').value,hour:document.getElementById('ev-hour').value,desc:document.getElementById('ev-desc').value.trim(),descEn:document.getElementById('ev-desc-en').value.trim(),type:document.getElementById('ev-type').value,emoji:document.getElementById('ev-emoji').value.trim()||'📅',serverLink:document.getElementById('ev-server').value.trim()};
   D.events.push(ev);
   save();renderAdmEv();renderEvents();renderHomeAnn();updDash();
   const send=document.getElementById('ev-discord');
-  if(send&&send.checked){sendEventToDiscord(ev);}
-  ['ev-title','ev-date','ev-hour','ev-desc','ev-emoji','ev-server'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  if(send&&send.checked){sendEventToDiscord(ev,'fr');sendEventToDiscord(ev,'en');}
+  ['ev-title','ev-title-en','ev-date','ev-hour','ev-desc','ev-desc-en','ev-emoji','ev-server'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   showToast('✅ Événement créé !');
 }
-async function sendEventToDiscord(ev){
-  const url=(D.cfg&&D.cfg.webhookAnnonce)||'';
-  if(!url){showToast('⚠️ Webhook annonces non configuré',true);return;}
+async function sendEventToDiscord(ev,lang){
+  lang=lang||'fr';
+  const url=(D.cfg&&(lang==='en'?D.cfg.webhookAnnonceEn:D.cfg.webhookAnnonce))||'';
+  if(!url)return;
   const colors={event:0xFFB700,competition:0xFF3B3B,annonce:0x00E5C9};
   const color=colors[ev.type]||0xFFB700;
+  const isEn=lang==='en';
+  const title=isEn?(ev.titleEn||ev.title):ev.title;
+  const desc=isEn?(ev.descEn||ev.desc||''):(ev.desc||'');
   const fields=[];
-  if(ev.date)fields.push({name:'📆 Date',value:fmtDate(ev.date)+(ev.hour?' à '+ev.hour:''),inline:true});
-  if(ev.serverLink)fields.push({name:'🎮 Serveur Roblox',value:`[Rejoindre](${ev.serverLink})`,inline:true});
-  const embed={title:`${ev.emoji||'📅'} ${ev.title}`,description:ev.desc||'',color,fields,footer:{text:'Team ZEGG • zegg.fr'},timestamp:new Date().toISOString()};
+  if(ev.date){
+    const d=new Date(ev.date);
+    const dateStr=isEn?d.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}).toUpperCase():fmtDate(ev.date);
+    fields.push({name:isEn?'📆 Date':'📆 Date',value:dateStr+(ev.hour?(isEn?' at '+ev.hour:' à '+ev.hour):''),inline:true});
+  }
+  if(ev.serverLink)fields.push({name:isEn?'🎮 Roblox Server':'🎮 Serveur Roblox',value:`[${isEn?'Join':'Rejoindre'}](${ev.serverLink})`,inline:true});
+  const embed={title:`${ev.emoji||'📅'} ${title}`,description:desc,color,fields,footer:{text:'Team ZEGG • zegg.fr'},timestamp:new Date().toISOString()};
+  const content=isEn?'@everyone 🚨 **New event!**':'@everyone 🚨 **Nouvel événement !**';
   try{
-    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:'@everyone 🚨 **Nouvel événement !**',embeds:[embed],allowed_mentions:{parse:['everyone']}})});
-    if(r.ok)showToast('📢 Annonce Discord envoyée !');else showToast('❌ Échec envoi Discord',true);
-  }catch(e){showToast('❌ Erreur Discord',true);}
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content,embeds:[embed],allowed_mentions:{parse:['everyone']}})});
+    if(r.ok)showToast(isEn?'📢 EN announcement sent!':'📢 Annonce FR envoyée !');else showToast('❌ '+(isEn?'EN':'FR')+' send failed',true);
+  }catch(e){showToast('❌ Discord error',true);}
 }
 function renderAdmEv(){
   const el=document.getElementById('adm-events');if(!el)return;
