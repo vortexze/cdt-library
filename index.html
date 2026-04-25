@@ -199,26 +199,99 @@ main{max-width:1400px;margin:0 auto;padding:28px}
   .adm-row .pr{display:none}
   .about-wrap{padding:26px 20px;margin:24px 10px}
 }
+
+/* ═══════════════ REDESIGN v18 — Sidebar dashboard ═══════════════ */
+:root{--sbW:240px;--bg:#06080f;--bg1:#0a0e1c;--bg2:#0d1224;--card:rgba(255,255,255,.022);--border:rgba(255,255,255,.06);--borderH:rgba(255,255,255,.16)}
+body{padding-left:var(--sbW);background:radial-gradient(900px 600px at 90% -10%,rgba(255,183,0,.05),transparent 60%),radial-gradient(800px 600px at -10% 110%,rgba(0,229,201,.04),transparent 60%),var(--bg)}
+#hdr{display:none!important}
+
+#sb{position:fixed;top:0;left:0;bottom:0;width:var(--sbW);background:linear-gradient(180deg,#080b18,#04060e);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:22px 14px 18px;z-index:100;overflow-y:auto}
+#sb .sb-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.88rem;letter-spacing:3px;display:flex;align-items:center;gap:9px;padding:4px 10px 20px;border-bottom:1px solid var(--border);margin-bottom:14px;color:#fff}
+#sb .sb-logo .gg{background:linear-gradient(135deg,var(--gold),#ffde6b);-webkit-background-clip:text;background-clip:text;color:transparent}
+#sb .sb-sec{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:2.6px;text-transform:uppercase;color:var(--muted);padding:14px 12px 6px;font-weight:600}
+#sb nav.tabs{display:flex;flex-direction:column;gap:3px;margin:0;flex:0}
+#sb .nb{display:flex;align-items:center;gap:11px;padding:10px 12px;font-family:'Inter',sans-serif;font-size:.82rem;letter-spacing:.3px;text-transform:none;color:var(--muted2);font-weight:500;border-radius:9px;border:1px solid transparent;cursor:pointer;transition:all .18s;flex:none}
+#sb .nb:hover{background:rgba(255,255,255,.04);color:#fff}
+#sb .nb.active{color:var(--gold);background:linear-gradient(90deg,rgba(255,183,0,.13),transparent 80%);border-color:rgba(255,183,0,.18);font-weight:600}
+#sb .nb .ic{width:20px;display:inline-flex;justify-content:center;font-size:1rem}
+#sb .sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+#sb .sb-foot .btn{justify-content:center;padding:10px 12px;font-size:.62rem;border-radius:9px}
+#sb .sb-mini{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1.6px;color:var(--muted);text-align:center;padding:6px 4px 0;line-height:1.6}
+#sb .sb-mini b{color:var(--gold);font-weight:700}
+
+main{max-width:none;margin:0;padding:30px 38px 60px}
+.page{animation:none}
+
+/* Page header — replaces hero */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.ph-l h1{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.55rem;letter-spacing:3px;background:linear-gradient(135deg,#fff 30%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;line-height:1.1}
+.ph-l p{color:var(--muted);font-size:.82rem;max-width:560px;margin:0}
+.ph-r{flex:1;max-width:380px;min-width:240px}
+.ph-r .search{padding:10px 16px;font-size:.85rem;border-radius:10px}
+.hero{display:none}
+
+/* Filter bar — sticky compact */
+.filters{position:sticky;top:0;z-index:50;margin:0 -38px 22px;padding:12px 38px;background:rgba(8,11,24,.82);backdrop-filter:blur(14px);border:none;border-bottom:1px solid var(--border);border-radius:0;flex-wrap:wrap;gap:8px}
+.flt{padding:8px 12px;font-size:.78rem;border-radius:8px;min-width:130px}
+.count{font-size:.68rem}
+
+/* Cards — flatter w/ class accent */
+.grid{grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:14px}
+.card{border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008))}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(0,0,0,.5),0 0 0 1px rgba(255,183,0,.18)}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accentLine,#7c5cff);z-index:3;opacity:.9;border-radius:12px 12px 0 0}
+.card.collector::after{display:none}
+.card[data-cls="S+"]::after,.card[data-cls="S"]::after{--accentLine:linear-gradient(90deg,#ff2d55,#ff9200)}
+.card[data-cls="A+"]::after,.card[data-cls="A"]::after{--accentLine:#ff9200}
+.card[data-cls="B"]::after{--accentLine:#ffb700}
+.card[data-cls="C"]::after{--accentLine:#00e5c9}
+.card[data-cls="D"]::after,.card[data-cls="E"]::after{--accentLine:#7c5cff}
+.card-img{aspect-ratio:16/9}
+.card-name{font-size:.96rem;letter-spacing:.3px}
+
+/* About fits dashboard width */
+.about-wrap{margin:10px 0;max-width:880px}
+
+@media(max-width:900px){
+  body{padding-left:0;padding-bottom:62px}
+  #sb{top:auto;bottom:0;width:100%;height:58px;flex-direction:row;padding:0 6px;border-right:none;border-top:1px solid var(--border);background:rgba(4,6,14,.96);overflow:hidden;backdrop-filter:blur(14px)}
+  #sb .sb-logo,#sb .sb-foot,#sb .sb-sec{display:none}
+  #sb nav.tabs{flex-direction:row;justify-content:space-around;flex:1;gap:2px;align-items:stretch}
+  #sb .nb{flex:1;justify-content:center;padding:6px 4px;font-size:.62rem;border-radius:8px;border:none;flex-direction:column;gap:3px;text-align:center}
+  #sb .nb .ic{font-size:1.15rem;width:auto}
+  #sb .nb.active{background:rgba(255,183,0,.08);color:var(--gold)}
+  main{padding:18px 14px 30px}
+  .filters{margin:0 -14px 16px;padding:10px 14px}
+  .ph{flex-direction:column;align-items:stretch;gap:12px;padding-bottom:14px;margin-bottom:16px}
+  .ph-l h1{font-size:1.2rem;letter-spacing:2px}
+  .ph-r{max-width:none}
+}
 </style>
 </head>
 <body>
 
-<header id="hdr"><div class="hdr-in">
-  <div class="logo">🚗 <span class="gg">BIBLIOTHÈQUE CDT</span></div>
+<aside id="sb">
+  <div class="sb-logo">🚗 <span class="gg">BIBLIOTHÈQUE CDT</span></div>
+  <div class="sb-sec">Navigation</div>
   <nav class="tabs">
-    <a class="nb active" onclick="showPage('library',this)">Bibliothèque</a>
-    <a class="nb" onclick="showPage('tokens',this)"><span class="tk"></span> Tokens</a>
-    <a class="nb" onclick="showPage('about',this)">À propos</a>
+    <a class="nb active" onclick="showPage('library',this)"><span class="ic">🚘</span> Bibliothèque</a>
+    <a class="nb" onclick="showPage('tokens',this)"><span class="ic"><span class="tk"></span></span> Tokens</a>
+    <a class="nb" onclick="showPage('about',this)"><span class="ic">ℹ️</span> À propos</a>
   </nav>
-  <a id="discord-btn" class="btn btn-discord" target="_blank" rel="noopener" href="#">💬 Discord</a>
-</div></header>
+  <div class="sb-foot">
+    <a id="discord-btn" class="btn btn-discord" target="_blank" rel="noopener" href="#">💬 Discord</a>
+    <div class="sb-mini">v18 · <b>576</b> voitures</div>
+  </div>
+</aside>
 
 <main>
   <section id="page-library" class="page active">
-    <div class="hero">
-      <h1>LA BIBLIOTHÈQUE DE CDT</h1>
-      <p>Toutes les voitures de Car Dealership Tycoon avec leurs stats et leur valeur en tokens</p>
-      <div class="search-wrap"><input class="search" id="search" placeholder="🔍 Rechercher une voiture, une marque..." oninput="renderCars()"></div>
+    <div class="ph">
+      <div class="ph-l">
+        <h1>BIBLIOTHÈQUE</h1>
+        <p>Toutes les voitures de Car Dealership Tycoon avec leurs stats et leur valeur en tokens.</p>
+      </div>
+      <div class="ph-r"><input class="search" id="search" placeholder="🔍 Rechercher une voiture, une marque..." oninput="renderCars()"></div>
     </div>
     <div class="filters">
       <select class="flt" id="f-brand" onchange="renderCars()"><option value="">Toutes marques</option></select>
@@ -244,10 +317,12 @@ main{max-width:1400px;margin:0 auto;padding:28px}
   </section>
 
   <section id="page-tokens" class="page">
-    <div class="hero">
-      <h1><span class="tk" style="width:1em;height:1em;vertical-align:-4px"></span> VALEURS EN TOKENS</h1>
-      <p>Données brutes de la communauté — <a href="https://sites.google.com/view/cdt-value-list" target="_blank" style="color:var(--gold)">CDT Customs (source officielle)</a></p>
-      <div class="search-wrap"><input class="search" id="tok-search" placeholder="🔍 Rechercher une voiture..." oninput="renderTokensPage()"></div>
+    <div class="ph">
+      <div class="ph-l">
+        <h1><span class="tk" style="width:.9em;height:.9em;vertical-align:-3px"></span> VALEURS EN TOKENS</h1>
+        <p>Données brutes de la communauté — <a href="https://sites.google.com/view/cdt-value-list" target="_blank" style="color:var(--gold)">CDT Customs (source officielle)</a></p>
+      </div>
+      <div class="ph-r"><input class="search" id="tok-search" placeholder="🔍 Rechercher une voiture..." oninput="renderTokensPage()"></div>
     </div>
     <div id="tokens-content" style="padding:0 10px"></div>
   </section>
@@ -523,7 +598,7 @@ function renderCars(){
     const img=`<img src="${src}" alt="${c.name}" onerror="this.src='${autoImg(c)}'">`;
     const hasTok=c.tokenMin!=null&&c.tokenMax!=null;
     const tokStr=hasTok?`${fmt(c.tokenMin)} – ${fmt(c.tokenMax)}`:(c.tokens?`${fmt(c.tokens-20000)} – ${fmt(c.tokens+20000)}`:'');
-    return `<div class="card${c.collector?' collector':''}" onclick="openCar(${c.id})">
+    return `<div class="card${c.collector?' collector':''}" data-cls="${c.class||''}" onclick="openCar(${c.id})">
       <div class="card-img">${img}${c.class?`<div class="card-badge">${c.class}</div>`:''}${c.perfClass?`<div class="card-badge" style="top:40px;left:10px;right:auto;background:rgba(0,229,201,.18);color:var(--accent);border-color:rgba(0,229,201,.4)">${c.perfClass}</div>`:''}${c.collector?`<div class="collector-badge">${c.collectorType||'Collector'}</div>`:''}</div>
       <div class="card-body">
         <div class="card-brand">${c.brand||'—'}${c.drivetrain?` · <span style="color:var(--accent)">${c.drivetrain}</span>`:''}</div>
