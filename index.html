@@ -102,6 +102,7 @@ main{max-width:1400px;margin:0 auto;padding:28px}
 .stat-val.cyan{color:var(--accent)}
 .tokens-bar{margin-top:10px;padding:8px 12px;background:linear-gradient(135deg,rgba(255,183,0,.12),rgba(255,146,0,.06));border:1px solid rgba(255,183,0,.22);border-radius:10px;display:flex;align-items:center;gap:8px;justify-content:center}
 .tokens-bar .ti{font-size:.8rem}
+.tk{display:inline-block;width:1.05em;height:1.05em;vertical-align:-3px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><radialGradient id='tg' cx='.35' cy='.32' r='.85'><stop offset='0' stop-color='%23fff2b8'/><stop offset='.45' stop-color='%23ffc83a'/><stop offset='.85' stop-color='%23c97a00'/><stop offset='1' stop-color='%236a3d00'/></radialGradient></defs><circle cx='12' cy='12' r='11' fill='url(%23tg)' stroke='%23472700' stroke-width='1'/><circle cx='12' cy='12' r='8.6' fill='none' stroke='%23704200' stroke-width='.6' opacity='.55'/><path d='M7 9 H17 V11 H13 V17 H11 V11 H7 Z' fill='%23472700'/></svg>") center/contain no-repeat;filter:drop-shadow(0 0 3px rgba(255,183,0,.45))}
 .tokens-bar .tv{font-family:'Orbitron',sans-serif;font-weight:800;font-size:.78rem;color:var(--gold);letter-spacing:1px}
 
 /* EMPTY */
@@ -206,7 +207,7 @@ main{max-width:1400px;margin:0 auto;padding:28px}
   <div class="logo">🚗 <span class="gg">BIBLIOTHÈQUE CDT</span></div>
   <nav class="tabs">
     <a class="nb active" onclick="showPage('library',this)">Bibliothèque</a>
-    <a class="nb" onclick="showPage('tokens',this)">🪙 Tokens</a>
+    <a class="nb" onclick="showPage('tokens',this)"><span class="tk"></span> Tokens</a>
     <a class="nb" onclick="showPage('about',this)">À propos</a>
   </nav>
   <a id="discord-btn" class="btn btn-discord" target="_blank" rel="noopener" href="#">💬 Discord</a>
@@ -244,7 +245,7 @@ main{max-width:1400px;margin:0 auto;padding:28px}
 
   <section id="page-tokens" class="page">
     <div class="hero">
-      <h1>🪙 VALEURS EN TOKENS</h1>
+      <h1><span class="tk" style="width:1em;height:1em;vertical-align:-4px"></span> VALEURS EN TOKENS</h1>
       <p>Données brutes de la communauté — <a href="https://sites.google.com/view/cdt-value-list" target="_blank" style="color:var(--gold)">CDT Customs (source officielle)</a></p>
       <div class="search-wrap"><input class="search" id="tok-search" placeholder="🔍 Rechercher une voiture..." oninput="renderTokensPage()"></div>
     </div>
@@ -455,7 +456,7 @@ function renderTokensPage(){
       <thead><tr style="border-bottom:2px solid ${c}55">
         <th style="text-align:left;padding:10px 12px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--muted2)">Vrai nom</th>
         <th style="text-align:left;padding:10px 12px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--muted2)">Nom CDT</th>
-        <th style="text-align:right;padding:10px 12px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--gold)">🪙 Tokens</th>
+        <th style="text-align:right;padding:10px 12px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--gold)"><span class="tk"></span> Tokens</th>
         <th style="text-align:right;padding:10px 12px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--accent)">📈 Demand</th>
       </tr></thead><tbody>`;
     for(const r of filtered){
@@ -536,7 +537,7 @@ function renderCars(){
           <div class="stat"><div class="stat-lbl">0-60</div><div class="stat-val">${c.accel||'—'}</div></div>
           <div class="stat"><div class="stat-lbl">Handling</div><div class="stat-val">${c.handling!=null?c.handling+'/10':'—'}</div></div>
         </div>`:''}
-        ${tokStr?`<div class="tokens-bar"><span class="ti">🪙</span><span class="tv">${tokStr}</span>${c.demand?`<span class="tv" style="margin-left:auto;color:var(--accent)">${c.demand}/10</span>`:''}</div>`:''}
+        ${tokStr?`<div class="tokens-bar"><span class="tk"></span><span class="tv">${tokStr}</span>${c.demand?`<span class="tv" style="margin-left:auto;color:var(--accent)">${c.demand}/10</span>`:''}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -586,7 +587,7 @@ function openCar(id){
         ${specRow('🚗 Conduite', c.drivingSide)}
       </div>
       ${(hasTokRange||c.tokens)?`<div class="token-box">
-        <div class="tl">🪙 Valeur en tokens ${c.demand?`<span style="color:var(--accent);margin-left:8px">Demand ${c.demand}/10</span>`:''}</div>
+        <div class="tl"><span class="tk"></span> Valeur en tokens ${c.demand?`<span style="color:var(--accent);margin-left:8px">Demand ${c.demand}/10</span>`:''}</div>
         <div class="token-range">${fmt(tLow)}<span class="sep">–</span>${fmt(tHigh)}</div>
         <div class="token-mid">Médiane : <b>${fmt(tMid)} tokens</b> · <span style="opacity:.6;font-size:.7rem">${tokSrc}</span></div>
       </div>`:'<div class="token-box"><div class="tl">Valeur en tokens non publiée</div><div class="token-mid" style="margin-top:8px;opacity:.6;font-size:.72rem">Cette voiture n\'a pas de valeur communautaire référencée (souvent les Shop / Mission non-tradeable).</div></div>'}
