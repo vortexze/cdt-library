@@ -640,28 +640,15 @@ function openCar(id){
     <button class="modal-close" onclick="closeCar()">✕</button>
     <div class="dt-hero${c.collector?' collector':''}">${img}${c.collector?`<div class="collector-badge" style="top:14px;right:14px">${c.collectorType||'Collector'}</div>`:''}</div>
     <div class="dt-body">
-      <div class="dt-badges">${c.brand?`<span class="dt-badge">${c.brand}</span>`:''}${c.class?`<span class="dt-badge" style="border-color:rgba(255,183,0,.4);color:var(--gold)">${c.class}</span>`:''}${c.perfClass?`<span class="dt-badge" style="border-color:rgba(0,229,201,.4);color:var(--accent)">${c.perfClass}</span>`:''}${c.collector?`<span class="dt-badge collector">👑 ${c.collectorType||'Collector'} Edition</span>`:''}${c.status?`<span class="dt-badge" style="border-color:rgba(255,45,85,.4);color:var(--red)">${c.status}</span>`:''}</div>
       <div class="dt-name">${c.name}</div>
-      ${c.realName&&c.realName!==c.name?`<div style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted2);margin-top:-14px;margin-bottom:20px;letter-spacing:1.5px;opacity:.75">↳ inspirée de : <b style="color:#fff;opacity:.9">${c.realName}</b></div>`:''}
       <div class="dt-stats">
-        <div class="dt-stat"><div class="l">${c.price!=null?'💰 Prix':'🎁 Obtention'}</div><div class="v gold" style="${c.price==null&&c.acquisition?'font-size:.85rem':''}">${c.price!=null?fmtMoney(c.price):(c.acquisition||'Exclusif')}</div></div>
+        <div class="dt-stat"><div class="l">💰 Prix</div><div class="v gold" style="${c.price==null&&c.acquisition?'font-size:.85rem':''}">${c.price!=null?fmtMoney(c.price):(c.acquisition||'Exclusif')}</div></div>
         ${specRow('⚡ Vitesse max', c.speed?c.speed+' mph':null, 'color:var(--accent)')}
-        ${specRow('🚀 0-60', c.accel)}
-        ${specRow('🎯 Handling', c.handling!=null?c.handling+'/10':null)}
-        ${specRow('🛞 Drivetrain', c.drivetrain)}
-        ${specRow('⚙️ Transmission', c.transmission)}
-        ${specRow('💺 Places', c.seats!=null?c.seats:null)}
-        ${specRow('🏷 Classe', c.class)}
-        ${specRow('🎚 Performance', c.perfClass)}
-        ${specRow('💵 $/Mile (EPM)', c.epm?'$'+fmt(c.epm):null, 'color:var(--gold)')}
-        ${specRow('📅 Ajouté le', c.added)}
-        ${specRow('🚗 Conduite', c.drivingSide)}
       </div>
       ${(hasTokRange||c.tokens)?`<div class="token-box">
-        <div class="tl"><span class="tk"></span> Valeur en tokens ${c.demand?`<span style="color:var(--accent);margin-left:8px">Demand ${c.demand}/10</span>`:''}</div>
+        <div class="tl"><span class="tk"></span> Valeur en tokens</div>
         <div class="token-range">${fmt(tLow)}<span class="sep">–</span>${fmt(tHigh)}</div>
-        <div class="token-mid">Médiane : <b>${fmt(tMid)} tokens</b> · <span style="opacity:.6;font-size:.7rem">${tokSrc}</span></div>
-      </div>`:'<div class="token-box"><div class="tl">Valeur en tokens non publiée</div><div class="token-mid" style="margin-top:8px;opacity:.6;font-size:.72rem">Cette voiture n\'a pas de valeur communautaire référencée (souvent les Shop / Mission non-tradeable).</div></div>'}
+      </div>`:''}
     </div>`;
   document.getElementById('car-modal').classList.add('open');
 }
