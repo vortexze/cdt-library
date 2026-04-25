@@ -601,20 +601,14 @@ function renderCars(){
     const hasTok=c.tokenMin!=null&&c.tokenMax!=null;
     const tokStr=hasTok?`${fmt(c.tokenMin)} – ${fmt(c.tokenMax)}`:(c.tokens?`${fmt(c.tokens-20000)} – ${fmt(c.tokens+20000)}`:'');
     return `<div class="card${c.collector?' collector':''}" data-cls="${c.class||''}" onclick="openCar(${c.id})">
-      <div class="card-img">${img}${c.class?`<div class="card-badge">${c.class}</div>`:''}${c.perfClass?`<div class="card-badge" style="top:40px;left:10px;right:auto;background:rgba(0,229,201,.18);color:var(--accent);border-color:rgba(0,229,201,.4)">${c.perfClass}</div>`:''}${c.collector?`<div class="collector-badge">${c.collectorType||'Collector'}</div>`:''}</div>
+      <div class="card-img">${img}${c.collector?`<div class="collector-badge">${c.collectorType||'Collector'}</div>`:''}</div>
       <div class="card-body">
-        <div class="card-brand">${c.brand||'—'}${c.drivetrain?` · <span style="color:var(--accent)">${c.drivetrain}</span>`:''}</div>
         <div class="card-name">${c.name}</div>
-        ${c.realName&&c.realName!==c.name?`<div class="card-real" style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin:-8px 0 10px;letter-spacing:1px;opacity:.7">↳ ${c.realName}</div>`:''}
         <div class="stats">
-          <div class="stat"><div class="stat-lbl">${c.price!=null?'Prix':'Obtention'}</div><div class="stat-val gold" style="${c.price==null&&c.acquisition?'font-size:.72rem;font-family:DM Mono,monospace;letter-spacing:1px':''}">${c.price!=null?fmtMoney(c.price):(c.acquisition||'Exclusif')}</div></div>
+          <div class="stat"><div class="stat-lbl">Prix</div><div class="stat-val gold" style="${c.price==null&&c.acquisition?'font-size:.72rem;font-family:DM Mono,monospace;letter-spacing:1px':''}">${c.price!=null?fmtMoney(c.price):(c.acquisition||'Exclusif')}</div></div>
           <div class="stat"><div class="stat-lbl">Vitesse</div><div class="stat-val cyan">${c.speed?c.speed+' mph':'—'}</div></div>
         </div>
-        ${(c.accel||c.handling)?`<div class="stats" style="margin-top:6px">
-          <div class="stat"><div class="stat-lbl">0-60</div><div class="stat-val">${c.accel||'—'}</div></div>
-          <div class="stat"><div class="stat-lbl">Handling</div><div class="stat-val">${c.handling!=null?c.handling+'/10':'—'}</div></div>
-        </div>`:''}
-        ${tokStr?`<div class="tokens-bar"><span class="tk"></span><span class="tv">${tokStr}</span>${c.demand?`<span class="tv" style="margin-left:auto;color:var(--accent)">${c.demand}/10</span>`:''}</div>`:''}
+        ${tokStr?`<div class="tokens-bar"><span class="tk"></span><span class="tv">${tokStr}</span></div>`:''}
       </div>
     </div>`;
   }).join('');
