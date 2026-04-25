@@ -233,6 +233,8 @@ main{max-width:none;margin:0;padding:30px 38px 60px}
 /* Filter bar — sticky compact */
 .filters{position:sticky;top:0;z-index:50;margin:0 -38px 22px;padding:12px 38px;background:rgba(8,11,24,.82);backdrop-filter:blur(14px);border:none;border-bottom:1px solid var(--border);border-radius:0;flex-wrap:wrap;gap:8px}
 .flt{padding:8px 12px;font-size:.78rem;border-radius:8px;min-width:130px}
+.flt option,select option{background:#0a0e1c;color:#eef0f7;font-family:'Inter',sans-serif}
+.flt option:checked,select option:checked{background:#1a1f35;color:var(--gold)}
 .count{font-size:.68rem}
 
 /* Cards — flatter w/ class accent */
@@ -296,9 +298,9 @@ main{max-width:none;margin:0;padding:30px 38px 60px}
     <div class="filters">
       <select class="flt" id="f-brand" onchange="renderCars()"><option value="">Toutes marques</option></select>
       <select class="flt" id="f-class" onchange="renderCars()"><option value="">Toutes classes</option></select>
-      <select class="flt" id="f-perf" onchange="renderCars()"><option value="">Toutes perf</option></select>
       <select class="flt" id="f-drive" onchange="renderCars()"><option value="">Tous drivetrain</option><option>FWD</option><option>RWD</option><option>AWD</option><option>4WD</option></select>
       <select class="flt" id="f-coll" onchange="renderCars()" style="background:linear-gradient(135deg,rgba(255,222,107,.12),rgba(255,146,0,.08));border-color:rgba(255,183,0,.35);color:var(--gold)"><option value="">Toutes voitures</option><option value="1">👑 Collectors uniquement</option><option value="0">Non-collectors</option></select>
+      <select class="flt" id="f-perf" onchange="renderCars()" style="min-width:120px;opacity:.85"><option value="">Perf class</option></select>
       <select class="flt" id="f-sort" onchange="renderCars()">
         <option value="name">Nom A→Z</option>
         <option value="price-desc">Prix ↓</option>
